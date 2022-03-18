@@ -2,106 +2,110 @@
 {% load static %}
 {% block content %}
 
-<br/>
-<br/>
-<br/>
-<br/>
+<br />
+<br />
+<br />
+<br />
 <style>
-.details {
-    border: 1.5px solid grey;
-    color: #212121;
-    width: 100%;
-    height: auto;
-    box-shadow: 0px 0px 10px #212121
-}
+    .details {
+        border: 1.5px solid grey;
+        color: #212121;
+        width: 100%;
+        height: auto;
+        box-shadow: 0px 0px 10px #212121
+    }
 
-.cart {
-    background-color: #212121;
-    color: white;
-    margin-top: 10px;
-    font-size: 12px;
-    font-weight: 900;
-    width: 100%;
-    height: 39px;
-    padding-top: 9px;
-    box-shadow: 0px 5px 10px #212121
-}
+    .cart {
+        background-color: #212121;
+        color: white;
+        margin-top: 10px;
+        font-size: 12px;
+        font-weight: 900;
+        width: 100%;
+        height: 39px;
+        padding-top: 9px;
+        box-shadow: 0px 5px 10px #212121
+    }
 
-.card {
-    width: fit-content
-}
+    .card {
+        width: fit-content
+    }
 
-.card-body {
-    width: fit-content
-}
+    .card-body {
+        width: fit-content
+    }
 
-.btn {
-    border-radius: 0
-}
+    .btn {
+        border-radius: 0
+    }
 
-.img-thumbnail {
-    border: none
-}
+    .img-thumbnail {
+        border: none
+    }
 
-.card {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, .2);
-    border-radius: 5px;
-    padding-bottom: 10px
-}
-
+    .card {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, .2);
+        border-radius: 5px;
+        padding-bottom: 10px
+    }
 </style>
 
 <section id="menu" class="menu">
     <div class="container">
 
-      <div class="section-title">
-        <h2>Our Delicious <span>Foods</span></h2>
-        <!-- <p>Ut possimus qui ut temporibus culpa velit eveniet modi omnis est adipisci expedita at voluptas atque vitae autem.</p> -->
-      </div>
+        <div class="section-title">
+            <h2>Our Delicious <span>Foods</span></h2>
+            <!-- <p>Ut possimus qui ut temporibus culpa velit eveniet modi omnis est adipisci expedita at voluptas atque vitae autem.</p> -->
+        </div>
 
-      <div class="row">
+        <div class="row">
 
-        <div class="col-lg-4 col-md-6">
-            <div class='container-fluid'>
-                <div class="card mx-auto col-md-3 col-10 mt-5"> <img class='mx-auto img-thumbnail' src="{% static 'img/items/big-mac.jpeg' %}" width="auto" height="auto" />
-                    <div class="card-body text-center mx-auto">
-                        <div class='cvp'>
-                            <h5 class="card-title font-weight-bold">Big Mac</h5>
-                            <p class="card-text">$5.49</p> <a href="#" class="btn details px-auto">view details</a><br /> <a href="#" class="btn cart px-auto">ADD TO CART</a>
+            <div class="col-lg-4 col-md-6">
+                <div class='container-fluid'>
+                    <div class="card mx-auto col-md-3 col-10 mt-5"> <img class='mx-auto img-thumbnail'
+                            src="{% static 'img/items/big-mac.jpeg' %}" width="auto" height="auto" />
+                        <div class="card-body text-center mx-auto">
+                            <div class='cvp'>
+                                <h5 class="card-title font-weight-bold">Big Mac</h5>
+                                <p class="card-text">$5.49</p> <a href="#" class="btn details px-auto">view
+                                    details</a><br /> <a href="#" class="btn cart px-auto">ADD TO CART</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-            <div class='container-fluid'>
-                <div class="card mx-auto col-md-3 col-10 mt-5"> <img class='mx-auto img-thumbnail' src="{% static 'img/items/cheese-burger.jpeg' %}" width="auto" height="auto" />
-                    <div class="card-body text-center mx-auto">
-                        <div class='cvp'>
-                            <h5 class="card-title font-weight-bold">Cheeseburger</h5>
-                            <p class="card-text">$2.49</p> <a href="#" class="btn details px-auto">view details</a><br /> <a href="#" class="btn cart px-auto">ADD TO CART</a>
+            <div class="col-lg-4 col-md-6">
+                <div class='container-fluid'>
+                    <div class="card mx-auto col-md-3 col-10 mt-5"> <img class='mx-auto img-thumbnail'
+                            src="{% static 'img/items/cheese-burger.jpeg' %}" width="auto" height="auto" />
+                        <div class="card-body text-center mx-auto">
+                            <div class='cvp'>
+                                <h5 class="card-title font-weight-bold">Cheeseburger</h5>
+                                <p class="card-text">$2.49</p> <a href="#" class="btn details px-auto">view
+                                    details</a><br /> <a href="#" class="btn cart px-auto">ADD TO CART</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-lg-4 col-md-6">
-            <div class='container-fluid'>
-                <div class="card mx-auto col-md-3 col-10 mt-5"> <img class='mx-auto img-thumbnail' src="{% static 'img/items/fries.jpeg' %}" width="auto" height="auto" />
-                    <div class="card-body text-center mx-auto">
-                        <div class='cvp'>
-                            <h5 class="card-title font-weight-bold">Fries</h5>
-                            <p class="card-text">$2.99</p> <a href="#" class="btn details px-auto">view details</a><br /> <a href="#" class="btn cart px-auto">ADD TO CART</a>
+            <div class="col-lg-4 col-md-6">
+                <div class='container-fluid'>
+                    <div class="card mx-auto col-md-3 col-10 mt-5"> <img class='mx-auto img-thumbnail'
+                            src="{% static 'img/items/fries.jpeg' %}" width="auto" height="auto" />
+                        <div class="card-body text-center mx-auto">
+                            <div class='cvp'>
+                                <h5 class="card-title font-weight-bold">French Fries</h5>
+                                <p class="card-text">$2.99</p> <a href="#" class="btn details px-auto">view
+                                    details</a><br /> <a href="#" class="btn cart px-auto">ADD TO CART</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
-
-      </div>
-
     </div>
-  </section>
+</section>
 
-  {% endblock %}
+{% endblock %}

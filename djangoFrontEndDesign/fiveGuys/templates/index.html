@@ -2,31 +2,29 @@
 {% load static %}
 {% block content %}
 
-<!-- ======= Breadcrumbs Section ======= -->
-<section class="breadcrumbs">
+<section class="inner-page">
     <div class="container">
-
-      <div class="d-flex justify-content-between align-items-center">
-        <h2>UI Design</h2>
-        <ol>
-          <li><a href="index.html">Home</a></li>
-          <li>UI Design</li>
-        </ol>
-      </div>
-
+        <p>
+            UI Design
+        </p>
+        <ul>
+            <li>
+                <h1><a href="{% url 'menu'%}">MENU PAGE</a></h1>
+            </li>
+            <li>
+                <h1><a href="{% url 'cart'%}">CART PAGE</a></h1>
+            </li>
+            <li>
+                <h1><a href="{% url 'orderHistory'%}">ORDER HISTORY PAGE</a></h1>
+            </li>
+            <li>
+                <h1><a href="{% url 'message'%}">MESSAGE PAGE</a></h1>
+            </li>
+            <li>
+                <h1><a href="{% url 'stockManagement'%}">STOCK MANAGEMENT PAGE</a></h1>
+            </li>
+        </ul>
     </div>
-  </section><!-- End Breadcrumbs Section -->
+</section>
 
-  <section class="inner-page">
-    <div class="container">
-      <p>
-        UI Design
-      </p>
-      <ul>
-      <li><h1><a href="{% url 'menu'%}">MENU PAGE</a></h1></li>
-      <li><h1><a href="{% url 'cart'%}">CART PAGE</a></h1></li>
-      </ul>
-    </div>
-  </section>
-  
 {% endblock %}
