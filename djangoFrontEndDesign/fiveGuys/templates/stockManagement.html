@@ -10,6 +10,31 @@
             <h2><span>Stock Management</span></h2>
         </div>
 
+        <form class="row">
+            <div class="col-4">
+                <select class="form-select" aria-label=".form-select-sm example">
+                    <option selected>---SELECT---</option>
+                    <option value="1">Chicken</option>
+                    <option value="2">Lettuce</option>
+                    <option value="3">Ketchup</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <select class="form-select" aria-label=".form-select-sm example">
+                    <option selected>Increase by</option>
+                    <option value="1">Decrease by</option>
+                    <option value="2">Change to</option>
+                </select>
+            </div>
+            <div class="col-3">
+                <input type="number" class="form-control" placeholder="amount" min="0">
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+        
+        <br/>
         <div class="row">
             <div class="col-lg-12 d-flex justify-content-center">
                 <ul id="menu-flters">
@@ -27,59 +52,29 @@
 
             <div class="col-lg-3 menu-item filter-meat">
                 <div class="menu-content">
-                    <a href="#">Chicken</a>
+                    <a href="#">Chicken</a><span>QTY: 10</span>
                 </div>
-                <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option>0</option>
-                    <option selected value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
             </div>
 
             <div class="col-lg-3 menu-item filter-vegetables">
                 <div class="menu-content">
-                    <a href="#">Lettuce</a>
+                    <a href="#">Lettuce</a><span>QTY: 10</span>
                 </div>
-                <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option>0</option>
-                    <option selected value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
             </div>
             <div class="col-lg-3 menu-item filter-sauce">
                 <div class="menu-content">
-                    <a href="#">Ketchup</a>
+                    <a href="#">Ketchup</a><span>QTY: 10</span>
                 </div>
-                <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option>0</option>
-                    <option selected value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
             </div>
             <div class="col-lg-3 menu-item filter-buns">
                 <div class="menu-content">
-                    <a href="#">Big Mac Bun</a>
+                    <a href="#">Big Mac Bun</a><span>QTY: 10</span>
                 </div>
-                <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option>0</option>
-                    <option selected value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
             </div>
             <div class="col-lg-3 menu-item filter-seasoning">
                 <div class="menu-content">
-                    <a href="#">Salt</a>
+                    <a href="#">Salt</a><span>QTY: 10</span>
                 </div>
-                <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option>0</option>
-                    <option selected value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
             </div>
         </div>
 

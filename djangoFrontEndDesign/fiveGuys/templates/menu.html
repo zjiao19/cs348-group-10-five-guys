@@ -18,12 +18,9 @@
     .cart {
         background-color: #212121;
         color: white;
-        margin-top: 10px;
         font-size: 12px;
         font-weight: 900;
         width: 100%;
-        height: 39px;
-        padding-top: 9px;
         box-shadow: 0px 5px 10px #212121
     }
 
@@ -59,30 +56,46 @@
         </div>
 
         <div class="row">
-
             <div class="col-lg-4 col-md-6">
                 <div class='container-fluid'>
-                    <div class="card mx-auto col-md-3 col-10 mt-5"> <img class='mx-auto img-thumbnail'
-                            src="{% static 'img/items/big-mac.jpeg' %}" width="auto" height="auto" />
+                    <div class="card mx-auto col-md-3 col-10 mt-5"> 
+                        <img class='mx-auto img-thumbnail' src="{% static 'img/items/big-mac.jpeg' %}" width="auto" height="auto" />
                         <div class="card-body text-center mx-auto">
                             <div class='cvp'>
                                 <h5 class="card-title font-weight-bold">Big Mac</h5>
-                                <p class="card-text">$5.49</p> <a href="#" class="btn details px-auto">view
-                                    details</a><br /> <a href="#" class="btn cart px-auto">ADD TO CART</a>
+                                <p class="card-text">$2.49</p> 
+                                <p class="card-text text-muted">Bun, beef, ketchup, cheese, pickle, cheese, pickle</p> 
+                                <form class="row">
+                                    <div class="col">
+                                        <input type="number" class="form-control" value="1" min="0">
+                                    </div>
+                                    <div class="col">
+                                        <button type="submit" class="btn cart px-auto">ADD TO CART</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-4 col-md-6">
                 <div class='container-fluid'>
-                    <div class="card mx-auto col-md-3 col-10 mt-5"> <img class='mx-auto img-thumbnail'
-                            src="{% static 'img/items/cheese-burger.jpeg' %}" width="auto" height="auto" />
+                    <div class="card mx-auto col-md-3 col-10 mt-5"> 
+                        <img class='mx-auto img-thumbnail' src="{% static 'img/items/cheese-burger.jpeg' %}" width="auto" height="auto" />
                         <div class="card-body text-center mx-auto">
                             <div class='cvp'>
                                 <h5 class="card-title font-weight-bold">Cheeseburger</h5>
-                                <p class="card-text">$2.49</p> <a href="#" class="btn details px-auto">view
-                                    details</a><br /> <a href="#" class="btn cart px-auto">ADD TO CART</a>
+                                <p class="card-text">$2.49</p> 
+                                <p class="card-text text-muted">Bun, beef, ketchup, cheese, pickle, cheese, pickle</p> 
+                                <form class="row">
+                                    <div class="col">
+                                        <input type="number" class="form-control" value="1" min="0">
+                                    </div>
+                                    <div class="col">
+                                        <button type="submit" class="btn cart px-auto">ADD TO CART</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -91,19 +104,28 @@
 
             <div class="col-lg-4 col-md-6">
                 <div class='container-fluid'>
-                    <div class="card mx-auto col-md-3 col-10 mt-5"> <img class='mx-auto img-thumbnail'
-                            src="{% static 'img/items/fries.jpeg' %}" width="auto" height="auto" />
+                    <div class="card mx-auto col-md-3 col-10 mt-5"> 
+                        <img class='mx-auto img-thumbnail' src="{% static 'img/items/fries.jpeg' %}" width="auto" height="auto" />
                         <div class="card-body text-center mx-auto">
                             <div class='cvp'>
                                 <h5 class="card-title font-weight-bold">French Fries</h5>
-                                <p class="card-text">$2.99</p> <a href="#" class="btn details px-auto">view
-                                    details</a><br /> <a href="#" class="btn cart px-auto">ADD TO CART</a>
+                                <p class="card-text">$2.49</p> 
+                                <p class="card-text text-muted">Potato</p> 
+                                <form class="row">
+                                    <div class="col">
+                                        <input type="number" class="form-control" value="1" min="0">
+                                    </div>
+                                    <div class="col">
+                                        <button type="submit" class="btn cart px-auto">ADD TO CART</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            
         </div>
     </div>
 </section>
