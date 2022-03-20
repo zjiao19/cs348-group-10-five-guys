@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="inner-page">
+    <div class="container">
+        <p>
+            UI Design
+        </p>
+        <ul>
+            <li>
+                <h1><a href="{% url 'menu'%}">MENU PAGE</a></h1>
+            </li>
+            <li>
+                <h1><a href="{% url 'cart'%}">CART PAGE</a></h1>
+            </li>
+            <li>
+                <h1><a href="{% url 'orderHistory'%}">ORDER HISTORY PAGE</a></h1>
+            </li>
+            <li>
+                <h1><a href="{% url 'message'%}">MESSAGE PAGE</a></h1>
+            </li>
+            <li>
+                <h1><a href="{% url 'stockManagement'%}">STOCK MANAGEMENT PAGE</a></h1>
+            </li>
+        </ul>
+    </div>
+</section>
+
+{% endblock %}

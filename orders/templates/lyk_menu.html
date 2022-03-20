@@ -1,0 +1,15 @@
+{% extends 'lyk_base.html' %}
+{% block page %}
+<table>
+    <tr>
+        <td>Product Name</td>
+        <td>Price</td>
+    </tr>
+    {% for product in products %}
+    <tr>
+        <td>{{ product.name }}</td>
+        <td>${{ product.price }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
