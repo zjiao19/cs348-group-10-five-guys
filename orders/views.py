@@ -47,16 +47,58 @@ def cart(request):
                         ingredient_required[ingredient_id] += quantity
                     else:
                         ingredient_required[ingredient_id] = quantity
+            
             # start transaction
-            # for ingredient_id in ingredient_required:
-            # update stock
-            # if low insert message
-            # if failed return alert
-            # if success update order status
-            # current_order.is_complete = True
-            # current_order.save()
+            ingredient_error, ingredient_warning = None, None
+            with connection.cursor() as cursor:
+                cursor.execute(sql.SQL("BEGIN"))
+                cursor.execute(sql.SQL("""
+                        UPDATE orders_order SET is_complete = True
+                        WHERE id = %s
+                """), [current_order.id])
+
+                for ingredient_id, quantity in ingredient_required.items():
+                    cursor.execute(sql.SQL("""
+                        UPDATE orders_ingredient SET quantity = quantity - %s
+                        WHERE id = %s"""), [quantity, ingredient_id])
+                
+                cursor.execute(sql.SQL("""
+                    SELECT name FROM orders_ingredient
+                    WHERE quantity < 0"""))
+                ingredient_error = cursor.fetchall()
+                print("error:" + str(ingredient_error))
+
+                cursor.execute(sql.SQL("""
+                    SELECT name FROM orders_ingredient
+                    WHERE quantity < %s"""), [100])
+                ingredient_warning = cursor.fetchall()
+                print("warning:" + str(ingredient_warning))
+
+                if len(ingredient_error) > 0:
+                    cursor.execute(sql.SQL("ROLLBACK"))
+                    context['error'] = "Error: Sorry, we don't have enough ingredients to complete your order."
+                else:
+                    cursor.execute(sql.SQL("COMMIT"))
+            # insert message
+            if 'error' in context:
+                for ingredient in ingredient_error:
+                    for staff in User.objects.filter(is_staff=True):
+                        Alert.objects.create(
+                            staff = staff,
+                            is_read = False,
+                            message = f"Low Stock ERROR: we don't have enough {ingredient[0]} to complete order #{current_order.id}."
+                        )
+            else:
+                for ingredient in ingredient_warning:
+                    for staff in User.objects.filter(is_staff=True):
+                        Alert.objects.create(
+                            staff = staff,
+                            is_read = False,
+                            message = f"Low Stock WARNING: we need more {ingredient[0]}."
+                        )
         if post['action'][0] == "Place Order":
-            return redirect("/cart")
+            if 'error' in context:
+                return render(request, 'cart.html', context=context)
             return redirect("/orderHistory")
         else:
             return redirect("/cart")

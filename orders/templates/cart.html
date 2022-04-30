@@ -23,6 +23,11 @@ function saveOrder(){
         </div>
 
         {% if not empty %}
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
         <form method="POST" class="wrapper">
             {% csrf_token %}
             <div class="row menu-container">
