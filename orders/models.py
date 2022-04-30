@@ -18,10 +18,20 @@ class Product(models.Model):
     def __str__(self):
        return self.name
 
+class Ingredient_Category(models.Model):
+    name = models.CharField(max_length=64)
+    def __str__(self):
+       return self.name
+
+class Ingredient_Unit(models.Model):
+    name = models.CharField(max_length=64)
+    def __str__(self):
+       return self.name
 class Ingredient(models.Model):
     name = models.CharField(max_length=64)
     quantity = models.DecimalField(max_digits=8, decimal_places=4)
-    unit = models.CharField(max_length=64)
+    category = models.ForeignKey(Ingredient_Category, on_delete=models.SET_NULL, null=True)
+    unit = models.ForeignKey(Ingredient_Unit, on_delete=models.SET_NULL, null=True)
     def __str__(self):
        return self.name
 
