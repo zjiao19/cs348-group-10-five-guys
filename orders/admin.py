@@ -28,3 +28,5 @@ class ItemInOrderAdmin(admin.ModelAdmin):
 admin.site.register(ItemInOrder, ItemInOrderAdmin)
 
 admin.site.register(Alert)
+
+admin.site.register(Ingredient_Category)
