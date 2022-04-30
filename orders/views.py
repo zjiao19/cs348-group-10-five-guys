@@ -9,7 +9,6 @@ import json
 def index(request):
     return render(request, 'index.html', context={})
 
-@login_required(login_url='/menu/logIn')
 def menu(request):
     context = {
             'price': Product.objects.get(id=1).price,
@@ -18,10 +17,6 @@ def menu(request):
     post = dict(request.POST)
     quantity = 0,
     item = ''
-    for key, value in post:
-        if 'quantity' in key:
-            item = key.split('_')[1]
-            quantity = int(value)
     # Insert new order
     with connection.cursor() as cursor:
         cursor.execute(sql.SQL("BEGIN"))
@@ -151,11 +146,7 @@ def message(request):
     return render(request, 'message.html', context=context)
 
 def stockManagement(request):
-    context = {
-        'ingredients': Ingredient.objects.all(),
-        'categories': Ingredient_Category.objects.all()
-    }
-    return render(request, 'stockManagement.html', context=context)
+    return render(request, 'stockManagement.html', context={})
 
 def updateProductImage(request, id):
     form = ImageForm(request.POST, request.FILES)
