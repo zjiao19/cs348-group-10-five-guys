@@ -34,4 +34,4 @@ class AlertAdmin(admin.ModelAdmin):
     list_display = ('staff', 'message')
 admin.site.register(Alert, AlertAdmin)
 
-admin.site.register(Ingredient_Category)
+admin.site.register(IngredientCategory)

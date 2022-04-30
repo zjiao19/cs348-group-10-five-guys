@@ -18,7 +18,7 @@ class Product(models.Model):
     def __str__(self):
        return self.name
 
-class Ingredient_Category(models.Model):
+class IngredientCategory(models.Model):
     name = models.CharField(max_length=64)
     def __str__(self):
        return self.name
@@ -26,7 +26,7 @@ class Ingredient_Category(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=64)
     quantity = models.DecimalField(max_digits=8, decimal_places=4)
-    category = models.ForeignKey(Ingredient_Category, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(IngredientCategory, on_delete=models.SET_NULL, null=True)
     unit = models.CharField(max_length=64)
     def __str__(self):
        return self.name
