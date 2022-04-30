@@ -1,4 +1,3 @@
-from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.db import connection
 from django.shortcuts import render, redirect
@@ -6,16 +5,33 @@ from orders.models import *
 from psycopg2 import sql
 from .forms import *
 from django.db.models import Sum
+import json
 def index(request):
     return render(request, 'index.html', context={})
 
+@login_required(login_url='/menu/logIn')
 def menu(request):
     context = {
             'price': Product.objects.get(id=1).price,
             'products': Product.objects.all()
     }
-    if request.method == 'POST':
-        context['added_to_cart'] = request.POST['quantity']
+    post = dict(request.POST)
+    quantity = 0,
+    item = ''
+    for key, value in post:
+        if 'quantity' in key:
+            item = key.split('_')[1]
+            quantity = int(value)
+    # Insert new order
+    with connection.cursor() as cursor:
+        cursor.execute(sql.SQL("BEGIN"))
+        cursor.execute(sql.SQL("COMMIT"))
+
+
+
+
+    with open('menu.log','w') as f:
+        f.write(json.dumps(request.POST))
     return render(request, 'menu.html', context=context)
 
 
@@ -156,6 +172,7 @@ def updateProductInfo(request, id):
                 WHERE id = %s AND {args[1]} IS DISTINCT FROM %s
             ''', args[2:])
 
+@login_required(login_url='/productManagement/logIn')
 def productManagement(request, id):
     if request.method == 'POST':
         if request.FILES:
@@ -163,12 +180,10 @@ def productManagement(request, id):
         else:
             updateProductInfo(request, id)
     context = {
+            'ingredients': Ingredient.objects.all(),
             'products': Product.objects.all(),
             'current_product_id': int(id),
-            'form': ImageForm(),
     }
-    with open('form.log', 'w') as f:
-        f.write(f'{context["form"]}\n{context["form"].as_p()}')
     return render(request, 'productManagement.html', context=context)
 
 def logIn(request, next):
