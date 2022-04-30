@@ -135,7 +135,11 @@ def message(request):
     return render(request, 'message.html', context=context)
 
 def stockManagement(request):
-    return render(request, 'stockManagement.html', context={})
+    context = {
+        'ingredients': Ingredient.objects.all(),
+        'categories': Ingredient_Category.objects.all()
+    }
+    return render(request, 'stockManagement.html', context=context)
 
 def updateProductImage(request, id):
     form = ImageForm(request.POST, request.FILES)
