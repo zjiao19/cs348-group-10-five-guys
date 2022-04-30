@@ -27,6 +27,7 @@ class Ingredient_Unit(models.Model):
     name = models.CharField(max_length=64)
     def __str__(self):
        return self.name
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=64)
     quantity = models.DecimalField(max_digits=8, decimal_places=4)
