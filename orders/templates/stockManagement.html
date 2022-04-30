@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block breadcrumbs %}
+  {% with page_name='Stock Management' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+
 {% block content %}
 
 <!-- ======= Menu Section ======= -->

@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumbs %}
+  {% with page_name='Product Management' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+  #products {
+    min-height: 70vh;
+  }
+
+  .product {
+    border-top: thick solid black;
+    border-bottom: thick solid black;
+    position: relative;
+    transition: border-color 0.5s;
+  }
+
+  .product:hover {
+    border-color: rgb(255, 176, 59);
+  }
+
+  .thumbnail {
+    min-width: 100px;
+    min-height: 100px;
+    width: 15vw;
+    height: 15vw;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+  }
+
+  .caption {
+    text-transform: capitalize;
+    height: 2rem;
+    width 100%;
+  }
+
+  .caption-input {
+    visibility: hidden;
+    position: fixed;
+    height: 2rem;
+    text-align: center;
+    border-radius: 0;
+    border-style: none;
+    border-top: thin solid rgb(255, 176, 59);
+    color: gray;
+  }
+
+  .caption-input:focus {
+    color: black;
+  }
+
+  .product-details {
+    visibility: hidden;
+    position: fixed;
+    overflow: scroll;
+    align-items: center;
+  }
+
+  .ingredient {
+    border-right: medium dashed rgba(0, 0, 0, 0.1);
+    border-bottom: thin solid rgba(0, 0, 0, 0.1);
+    padding-top: 1rem;
+    min-width: 30%;
+    position: relative;
+  }
+
+  select {
+    background-color: white;
+    border-radius: 0;
+    border-style: none;
+    border-top: thin solid rgb(255, 176, 59);
+    border-bottom: thin solid rgb(255, 176, 59);
+    color: gray;
+  }
+
+  select:focus {
+    color: black;
+  }
+
+  button {
+    background-color: rgba(255, 176, 59, 0.8);
+    transition: background-color 0.5s, margin 0.5s, right 0.5s;
+    visibility: hidden;
+    position: fixed;
+    border-style: none;
+  }
+
+  @media (min-width: 992px) {
+    button{ right: 5px; }
+  }
+
+  button:hover {
+    background-color: rgb(255, 176, 59);
+    margin: 0 !important;
+    right: 0;
+  }
+
+  .quantity {
+    width: 5rem;
+    height: 2rem;
+    border-radius: 0;
+    border-style: none;
+    border-top: thin solid rgb(255, 176, 59);
+    border-bottom: thin solid rgb(255, 176, 59);
+    color: gray;
+  }
+
+  .quantity:focus {
+    color: black;
+  }
+
+  label {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .mask {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: rgb(255, 176, 59);
+    text-align: center;
+    color: white;
+    opacity: 0;
+    transition: 0.5s;
+  }
+
+  .centered {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
+    text-transform: capitalize;
+    font-weight: bold;
+  }
+
+  .mask:hover {
+    opacity: 0.9;
+  }
+
+  #expended > .mask {
+    display: none;
+  }
+
+  #expended button {
+    visibility: visible !important;
+    position: relative !important;
+  }
+
+  #expended .product-details {
+    visibility: visible !important;
+    min-height: 150px;
+    height: 20vh;
+    position: relative !important;
+  }
+
+  #expended .caption {
+    visibility: hidden;
+    position: absolute;
+  }
+
+  #expended .caption-input {
+    visibility: visible !important;
+    position: relative !important;
+    display: block;
+  }
+
+  #expended {
+    transition: 1s;
+    flex: 0 0 100%;
+    position: relative;
+    border-top: thick solid rgb(255, 176, 59) !important;
+    border-bottom: thick solid rgb(255, 176, 59) !important;
+  }
+
+  .upload-image {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    font-weight: lighter;
+  }
+
+  .upload-image::file-selector-button {
+    display: none;
+  }
+
+  .new-ingredient {
+    color: rgba(0, 0, 0, 0.1);
+    transition: color 0.5s, background-color 0.5s, border-color 0.5s;
+  }
+
+  .new-ingredient:hover {
+    color: white;
+    background-color: rgba(255, 176, 59, 0.9);
+    border-color: rgba(255, 176, 59, 0.9);
+  }
+
+</style>
+
+
+<div id="products" class="container">
+
+<div class="row">
+  <div class="col-12">
+    <div class="d-flex flex-wrap justify-content-around">
+      {% for product in products %}
+        <form class="product m-3 text-center row" onclick="showDetails(this)" action="{% url 'productManagement' id=product.id %}" method="POST">
+          {% csrf_token %}
+          <div class="product-image d-flex flex-column">
+            <div class="position-relative">
+              <img src="
+                {% if product.image %}
+                  {{ product.image.url }}
+                {% else %}
+                  {% static 'five_guys.png' %}
+                  {% endif %}
+              " alt="" class="thumbnail">
+              <div class="mask">
+                <div class="centered">upload image</div>
+                <input class="centered upload-image" type="file" name="image" accept="image/*" required id="id_image">
+              </div>
+            </div>
+            <div class="caption">{{ product.name }}</div>
+            <input type="text" class="caption-input" name="product|name|{{ product.id }}" value="{{ product.name }}">
+          </div>
+
+          <div class="product-details d-flex flex-wrap align-items-stretch justify-content-start col-md-8 col-sm-7">
+            <div class="ingredient new-ingredient flex-md-grow-0 flex-grow-1">
+              <div class="centered">
+                <i class="fa-solid fa-circle-plus fa-2xl mb-2"></i>
+                <div>New Ingredient</div>
+              </div>
+            </div>
+            {% for recipe in product.recipe_set.all %}
+              <div class="ingredient flex-md-grow-0 flex-grow-1">
+                <div class="p-3 d-flex flex-nowrap justify-content-between">
+                  <label>Ingredient:&emsp;</label>
+                  <select name="recipe|ingredient_id|{{ recipe.id }}">
+                    <option value="{{ recipe|ingredient_id }}">{{ recipe|ingredient_name }}</option>
+
+                    {% for ingredient in product|unused_ingredients %}
+                    <option value="{{ ingredient.id }}">{{ ingredient.name }}</option>
+                    {% endfor %}
+
+                  </select>
+                </div>
+                <div class="p-3 d-flex flex-nowrap justify-content-between">
+                  <label>Quantity:&emsp;</label><br>
+                  <input class="quantity text-end" type="number" step=0.01 name="recipe|ingredient_quantity|{{ recipe.id }}" value={{ recipe|ingredient_quantity }}>
+                  <label>&ensp;{{ recipe|ingredient_unit }}</label>
+                </div><br>
+              </div>
+            {% endfor %}
+          </div>
+          <button class="col-md-1 col-sm-12 p-2 my-2" type="submit">Update</button>
+          <div class="mask">
+            <div class="centered">edit</div>
+          </div>
+        </form>
+
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    function showDetails(product) {
+        let previouslyShown = document.getElementById('expended')
+        if (previouslyShown !== null) {
+            previouslyShown.removeAttribute('id', 'expended');
+            previouslyShown.querySelector('div').classList.remove('col-md-3');
+            previouslyShown.classList.remove('row');
+        }
+        product.setAttribute('id', 'expended');
+        product.classList.add('row');
+        product.querySelector('div').classList.add('col-md-3');
+    }
+
+  /*
+    function newIngredient(predecessor) {
+        let ingredient = document.createElement();
+        ingredient.classList.add('ingredient', 'flex-md-grow-0', 'flex-grow-1');
+        ingredient.innerHTML = {{ new_ingredient }};
+    }
+  */
+</script>
+
+
+<!--
+
+<div class="row">
+  <div class="col-lg-3">
+    <ul class="nav nav-tabs flex-column">
+
+      {% for product in products %}
+      <li class="nav-item">
+        <a class="nav-link
+          {% if product|id_is:current_product_id %} active show{% endif %}
+        " href="{% url 'productManagement' id=product.id %}">{{ product.name }}</a>
+      </li>
+      {% endfor %}
+
+    </ul>
+  </div>
+
+  <div class="col-lg-9 mt-4 mt-lg-0">
+    <div class="tab-content">
+
+      {% for product in products %}
+      <div class="tab-pane {% if product|id_is:current_product_id %}active show{% endif %}">
+        <div class="row">
+          <div class="col-lg-8 details order-2 order-lg-1">
+
+            <form action="{% url 'productManagement' id=product.id %}" id="php-email-form" method="POST">
+              {% csrf_token %}
+              <div>
+                <label>Product Name:</label><br>
+                <input type="text" name="product|name|{{ product.id }}" value="{{ product.name }}">
+              </div><br>
+
+              {% for recipe in product.recipe_set.all %}
+              <div>
+                <label>Ingredient:</label><br>
+                <select class="form-select" name="recipe|ingredient_id|{{ recipe.id }}">
+                  <option value="{{ recipe|ingredient_id }}">{{ recipe|ingredient_name }}</option>
+
+                  {% for ingredient in product|unused_ingredients %}
+                  <option value="{{ ingredient.id }}">{{ ingredient.name }}</option>
+                  {% endfor %}
+
+                </select>
+              </div><br>
+              <div>
+                <label>Ingredient Quantity:</label><br>
+                <input type="number" step=0.01 name="recipe|ingredient_quantity|{{ recipe.id }}" value={{ recipe|ingredient_quantity }}>
+                <a style="float: right">{{ recipe|ingredient_unit }}</a>
+              </div><br>
+              {% endfor %}
+              <button class="book-a-table-btn" type="submit">Update</button>
+            </form>
+
+          </div>
+          <div class="col-lg-4 text-center order-1 order-lg-2">
+            <img src="
+              {% if product.image %}
+                {{ product.image.url }}
+              {% else %}
+                {% static 'five_guys.png' %}
+              {% endif %}
+            " alt="" class="img-fluid">
+
+            <form action="{% url 'productManagement' id=product.id %}" enctype="multipart/form-data" id="php-email-form" method="POST">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <button type="submit">Upload</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</div>
+
+</div>
+
+-->
+
+
+
+{% endblock %}

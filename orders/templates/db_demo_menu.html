@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<style>
+.head {
+  text-align: center;
+  color: #ff0000;
+}
+</style>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>CS348 Five Guys</title>
+    </head>
+    <body>
+      <h1 class="head">Five Guys</h1>
+      <table>
+          <tr class="head">
+              <td>Product Name</td>
+              <td>Price</td>
+          </tr>
+          {% for product in products %}
+          <tr>
+              <td>{{ product.name }}</td>
+              <td>${{ product.price }}</td>
+          </tr>
+          {% endfor %}
+      </table>
+    </body>
+</html>

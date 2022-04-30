@@ -1,12 +1,17 @@
-from django.urls import path
+from django.urls import path, re_path
+from django.views.generic.base import RedirectView
 from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    re_path(r'^(?P<next>\w*)/logIn$', views.logIn, name='logIn'),
+    re_path(r'^(?P<next>\w*)/logOut$', views.logOut, name='logOut'),
+    re_path(r'^(?P<next>\w*)/register$', views.register, name='register'),
     path('menu', views.menu, name='menu'),
     path('cart', views.cart, name='cart'),
     path('orderHistory', views.orderHistory, name='orderHistory'),
     path('message', views.message, name='message'),
     path('stockManagement', views.stockManagement, name='stockManagement'),
-    path('dbDemo', views.db_demo_menu, name='dbDemo'),
+    path('productManagement/', RedirectView.as_view(url='0'), name='productManagement'),
+    re_path(r'^productManagement/(?P<id>\d+)$', views.productManagement, name='productManagement'),
 ]

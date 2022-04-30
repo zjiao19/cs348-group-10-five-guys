@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block breadcrumbs %}
+  {% with page_name='Messages' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+
 {% block content %}
 
 <!-- ======= Whu Us Section ======= -->
@@ -9,41 +16,36 @@
         <div class="section-title">
             <h2><span>Message</span></h2>
         </div>
-
-        <div class="row">
-
-            <div class="col-lg-4">
-                <div class="box">
-                    <span>Out of stock warning</span>
-                    <p>March 18th, 13:22</p>
-                    No catchup
-                </div>
+        {% for message in messages %}
+          {% if message.is_read %}
+            <div class = "row">
+              <div class="col-12">
+                <form method="POST">
+                  {% csrf_token %}
+                  <input name="message_id" value="{{ message.id }}" class="d-none">
+                  <input name="delete" class="d-none">
+                  <div class="box overflow-auto" onclick="this.querySelector('p').innerHTML = 'You finished, congratulation!';this.parentElement.submit();">
+                    <span>{{message.message}}</span>
+                    <p>Alert checked, please refill supplies ASAP!</p>
+                  </div>
+                </form>
+              </div>
             </div>
-
-            <div class="col-lg-4 mt-4 mt-lg-0">
-                <div class="box">
-                    <span>Out of stock warning</span>
-                    <p>March 17th, 13:22</p>
-                    Can't make Cheeseburger
-                </div>
+          {% else %}
+            <div class ="row">
+              <div class = "col-12">
+                <form method="POST">
+                  {% csrf_token %}
+                  <input name="message_id" value="{{ message.id }}" class="d-none">
+                  <div class="box overflow-auto" onclick="this.querySelector('p').innerHTML = 'Alert checked, please refill supplies ASAP!';this.parentElement.submit();">
+                    <span>{{message.message}}</span>
+                    <p>readMe</p>
+                  </div>
+                </form>
+              </div>
             </div>
-
-            <div class="col-lg-4 mt-4 mt-lg-0">
-                <div class="box">
-                    <span>Low on stock warning</span>
-                    <p>March 8th, 9:22</p>
-                    Big Mac bun is low on stock
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="box">
-                    <span>Out of stock warning</span>
-                    <p>March 8th, 8:13</p>
-                    No honey mustard
-                </div>
-            </div>
-        </div>
-
+          {% endif %}
+        {% endfor %}
     </div>
 </section><!-- End Whu Us Section -->
 {% endblock %}

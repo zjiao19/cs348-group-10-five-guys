@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumbs %}
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+html, body {
+  margin: 0 !important;
+  height: 100vh !important;
+  width: 100vw !important;
+  overflow: hidden !important;
+  background-image:
+    radial-gradient(rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0.8)),
+    url('{% static 'five_guys.png' %}') !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+.wrapper {
+  padding-top: 10vh;
+}
+
+.login {
+  background-color: white;
+  opacity: 0.85;
+  border-radius: 1rem;
+  margin-top: 10vh;
+  position: relative;
+}
+
+.login .bg-blur {
+  position: absolute;
+  border-radius: 1rem;
+  top: 5px;
+  left: 5px;
+  height: calc(100% - 10px);
+  width: calc(100% - 10px);
+  z-index: -1;
+  filter: blur(20px);
+  background-color: #eeeeee;
+}
+
+.rounded-l {
+  border-top-left-radius: .25rem;
+  border-top-right-radius: 0rem;
+  border-bottom-left-radius: .25rem;
+  border-bottom-right-radius: 0rem;
+  width: 2.5rem;
+}
+
+input:hover {
+  border-right: thick inset rgba(255, 176, 59, 0.6);
+}
+
+.error {
+  color: #dc3545;
+  font-size: 0.8rem;
+  position: absolute;
+  width: 100%;
+  top: -2rem;
+}
+
+</style>
+
+<form method="POST" class="wrapper">
+{% csrf_token %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xl-4 col-lg-3 col-md-2"></div>
+    <div class="col-xl-4 col-lg-6 col-md-8 login">
+      <div class="p-5 m-3">
+
+        <p class="h1 text-center mb-5">Log In</p>
+
+        <div class="form-group position-relative">
+          {% if username %}
+            <p class="text-center error">Incorrect User Name or Password!</p>
+          {% endif %}
+        </div>
+
+        <div class="input-group mb-4">
+          <div class="input-group-prepend d-flex">
+            <span class="input-group-text rounded-l">
+              <i class="fa-solid fa-user fa-fw fa-beat-fade" id="username-icon"></i>
+            </span>
+          </div>
+          <input type="text" name="username" placeholder="User Name" maxlength="150"
+            autocapitalize="none" autocomplete="username" autofocus required
+            {% if username %} value="{{ username }}" {% endif %}
+            id="username" class="form-control"
+            onfocus="document.getElementById('username-icon').classList.add('fa-beat-fade');"
+            onblur="document.getElementById('username-icon').classList.remove('fa-beat-fade');"
+          >
+        </div>
+
+        <div class="input-group mb-4">
+          <div class="input-group-prepend d-flex">
+            <span class="input-group-text rounded-l">
+              <i class="fa-solid fa-key fa-fw" id="password-icon"></i>
+            </span>
+          </div>
+          <input type="password" name="password" placeholder="Password"
+            autocomplete="password" required
+            id="password" class="form-control"
+            onfocus="document.getElementById('password-icon').classList.add('fa-beat-fade');"
+            onblur="document.getElementById('password-icon').classList.remove('fa-beat-fade');"
+          >
+        </div>
+
+        <div class="form-group mb-5">
+          <button type="submit" class="form-control book-a-table-btn m-0 rounded">Log In</button>
+        </div>
+
+        <div class="form-group mb-4 text-center">
+          Don't have an account?
+          <a href="{% url 'register' next=next %}">Register</a>
+        </div>
+
+      </div>
+      <div class="bg-blur"></div>
+    </div>
+  </div>
+</div>
+</form>
+
+{% endblock %}

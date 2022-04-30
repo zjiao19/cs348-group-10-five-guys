@@ -37,6 +37,9 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
 </head>
 
 <body>
@@ -45,7 +48,11 @@
     <section id="topbar" class="d-flex align-items-center fixed-top ">
         <div
             class="container-fluid container-xl d-flex align-items-center justify-content-center justify-content-lg-start">
-            <span>Welcome to Five Guys!</span>
+            {% if request.user.is_authenticated %}
+              <span>Hello, {{ request.user.username }}!</span>
+            {% else %}
+              <span>Welcome to Five Guys!</span>
+            {% endif %}
         </div>
     </section>
 
@@ -66,29 +73,42 @@
                     <li><a class="nav-link scrollto" href="{% url 'cart' %}">Cart</a></li>
                     <li><a class="nav-link scrollto" href="{% url 'orderHistory' %}">Order</a></li>
                     <li><a class="nav-link scrollto" href="{% url 'stockManagement' %}">Stock</a></li>
+                    <li><a class="nav-link scrollto" href="{% url 'productManagement' %}">Products</a></li>
                     <li><a class="nav-link scrollto" href="{% url 'message' %}">Message</a></li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
 
-            <a href="#" class="book-a-table-btn scrollto">Log In</a>
+            {% if request.user.is_authenticated %}
+              <a href="{% url 'logOut' next=request|path %}" class="book-a-table-btn">Log Out</a>
+            {% else %}
+              <a href="{% url 'logIn' next=request|path %}" class="book-a-table-btn">Log In</a>
+            {% endif %}
 
         </div>
     </header><!-- End Header -->
+
+    <div class="d-md-none p-4"></div>
+
     <!-- ======= Breadcrumbs Section ======= -->
+
+    {% block breadcrumbs %}
     <section class="breadcrumbs">
         <div class="container">
 
             <div class="d-flex justify-content-between align-items-center">
-                <h2>UI Design</h2>
+                <h2 class="d-none d-md-block">{{ page_name }}</h2>
                 <ol>
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li>UI Design</li>
+                    <li>{{ page_name }}</li>
                 </ol>
             </div>
 
         </div>
-    </section><!-- End Breadcrumbs Section -->
+    </section>
+    {% endblock %}
+
+    <!-- End Breadcrumbs Section -->
     <main id="main">
 
         {% block content %} {% endblock %}
@@ -96,11 +116,11 @@
     </main><!-- End #main -->
 
     <!-- ======= Footer ======= -->
-    <footer id="footer">
+    <footer id="footer" {% if request|is_hidden %} class="d-none" {% endif %}>
         <div class="container">
             <h3>Five Guys</h3>
             <div class="copyright">
-                &copy; Copyright <strong><span>Delicious</span></strong>. All Rights Reserved
+                &copy; Copyright <strong><span>CS348 Five Guys</span></strong>. All Rights Reserved
             </div>
             <div class="credits">
                 <!-- All the links in the footer should remain intact. -->
@@ -125,6 +145,8 @@
 
     <!-- Template Main JS File -->
     <script src="{% static 'js/main.js'%}"></script>
+    
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
 </body>
 
 </html>

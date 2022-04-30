@@ -1,7 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block breadcrumbs %}
+  {% with page_name='Cart' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+
 {% block content %}
 
+<!-- jiao19 start -->
+<script>
+function saveOrder(){
+    document.getElementById('save_order').click();
+}
+</script>
 <!-- ======= Menu Section ======= -->
 <section id="menu" class="menu">
     <div class="container">
@@ -10,79 +23,45 @@
             <h2><span>Cart</span></h2>
         </div>
 
-        <!-- <div class="row">
-            <div class="col-lg-12 d-flex justify-content-center">
-                <ul id="menu-flters">
-                    <li data-filter="*" class="filter-active">Show All</li>
-                    <li data-filter=".filter-starters">Starters</li>
-                    <li data-filter=".filter-salads">Salads</li>
-                    <li data-filter=".filter-specialty">Specialty</li>
-                </ul>
-            </div>
-        </div> -->
+        {% if not empty %}
+        <form method="POST" class="wrapper">
+            {% csrf_token %}
+            <div class="row menu-container">
+                {% for item in items %}
+                <div class="col-lg-12 menu-item">
+                    <div class="menu-content">
+                        <a href="#">{{ item.item.name }}</a><span>${{ item.item.price | floatformat:2 }}</span>
+                    </div>
+                    <!-- <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+                        <option value="0">0 (remove)</option>
+                        <option selected value="{{ item.quantity }}">{{ item.quantity }}</option>
+                    </select> -->
+                    <input type="number" class="form-control" value="{{ item.quantity }}" min="0" name="quantity_{{ item.item.id }}" onkeydown="if(event.key==='.'){event.preventDefault();}" onfocusout="saveOrder();">
+                    <div class="menu-ingredients">
+                        {% for recipe in item.item.recipe_set.all %}
+                            {{ recipe.ingredient.name | capfirst }}{% if recipe != item.item.recipe_set.all.last %},&nbsp;{% endif %}
+                        {%endfor%}
+                        <!-- Mac sauce, diced onions, shredded lettuce, pickle, American cheese, meat, Big Mac bun -->
+                    </div>
+                </div>
+                {% endfor %}
 
-        <div class="row menu-container">
-
-            <div class="col-lg-12 menu-item filter-starters">
+            <div class="col-lg-12 menu-item">
                 <div class="menu-content">
-                    <a href="#">Big Mac</a><span>$4.79</span>
-                </div>
-                <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option>0</option>
-                    <option selected value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-                <div class="menu-ingredients">
-                    Mac sauce, diced onions, shredded lettuce, pickle, American cheese, meat, Big Mac bun
-                </div>
-            </div>
-
-            <div class="col-lg-12 menu-item filter-specialty">
-                <div class="menu-content">
-                    <a href="#">Cheeseburger</a><span>$1.79</span>
-                </div>
-                <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option>0</option>
-                    <option selected value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-                <div class="menu-ingredients">
-                    Mustard, ketchup, diced onions, pickle, American cheese, meat, regular bun
-                </div>
-            </div>
-
-            <div class="col-lg-12 menu-item filter-salads">
-                <div class="menu-content">
-                    <a href="#">French Fries</a><span>$1.99</span>
-                </div>
-                <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option>0</option>
-                    <option selected value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-                <div class="menu-ingredients">
-                    French fries
-                </div>
-            </div>
-            <div class="col-lg-12 menu-item filter-salads">
-                <div class="menu-content">
-                    <h4>Total</h4> <span>$8.57</span>
+                    <h4>Total</h4> <span>${{ current_order | order_price | floatformat:2 }}</span>
                 </div>
             </div>
         </div>
-        <button>Submit Order</button>
+        <!-- <button>Submit Order</button> -->
+        <input type="submit" name="action" value="Place Order" />
+        <input type="submit" name="action" id="save_order" value="Save" hidden="hidden" />
+        </form>
+        {% else %}
+        <span>You don't have anything in your cart! Go to <a href="{% url 'menu' %}">Menu</a> to start a new order!</span>
+        {% endif %}
     </div>
 </section><!-- End Menu Section -->
+<!-- jiao19 end -->
 
 {% endblock %}
-<script>
-    function increment() {
-        document.getElementById('demoInput').stepUp();
-    }
-    function decrement() {
-        document.getElementById('demoInput').stepDown();
-    }
-</script>
+
