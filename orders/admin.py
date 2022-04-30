@@ -6,7 +6,19 @@ admin.site.register(Customer)
 admin.site.register(Staff)
 admin.site.register(Product)
 admin.site.register(Ingredient)
-admin.site.register(Recipe)
-admin.site.register(Order)
-admin.site.register(ItemInOrder)
+
+class RecipeAdmin(admin.ModelAdmin):
+    list_display = ('product', 'ingredient', 'ingredient_quantity')
+admin.site.register(Recipe, RecipeAdmin)
+
+admin.site.register(Category)
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'customer', 'is_complete')
+admin.site.register(Order, OrderAdmin)
+
+class ItemInOrderAdmin(admin.ModelAdmin):
+    list_display = ('order', 'item', 'quantity')
+admin.site.register(ItemInOrder, ItemInOrderAdmin)
+
 admin.site.register(Alert)
