@@ -32,14 +32,11 @@ function saveOrder(){
             {% csrf_token %}
             <div class="row menu-container">
                 {% for item in items %}
+                {% if item.quantity > 0 %}
                 <div class="col-lg-12 menu-item">
                     <div class="menu-content">
                         <a href="#">{{ item.item.name }}</a><span>${{ item.item.price | floatformat:2 }}</span>
                     </div>
-                    <!-- <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                        <option value="0">0 (remove)</option>
-                        <option selected value="{{ item.quantity }}">{{ item.quantity }}</option>
-                    </select> -->
                     <input type="number" class="form-control" value="{{ item.quantity }}" min="0" name="quantity_{{ item.item.id }}" onkeydown="if(event.key==='.'){event.preventDefault();}" onfocusout="saveOrder();">
                     <div class="menu-ingredients">
                         {% for recipe in item.item.recipe_set.all %}
@@ -48,6 +45,7 @@ function saveOrder(){
                         <!-- Mac sauce, diced onions, shredded lettuce, pickle, American cheese, meat, Big Mac bun -->
                     </div>
                 </div>
+                {% endif %}
                 {% endfor %}
 
             <div class="col-lg-12 menu-item">
