@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db import connection
 from django.shortcuts import render, redirect
 from orders.models import *
@@ -149,6 +150,7 @@ def message(request):
             }
     return render(request, 'message.html', context=context)
 
+@staff_member_required(login_url = "/")
 def stockManagement(request):
     context = {
         'ingredients': Ingredient.objects.all(),
