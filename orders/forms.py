@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth import forms as auth_forms
-from .models import User
-from .models import Ingredient
+from .models import Ingredient, Product, User
 
 class UserCreationForm(auth_forms.UserCreationForm):
     class Meta(auth_forms.UserCreationForm.Meta):
@@ -13,6 +12,11 @@ class UserChangeForm(auth_forms.UserChangeForm):
 
 class ImageForm(forms.Form):
     image = forms.ImageField()
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'price', 'category']
 
 class IngredientForm(forms.ModelForm):
     class Meta:

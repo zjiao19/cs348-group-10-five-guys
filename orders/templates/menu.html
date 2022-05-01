@@ -63,7 +63,6 @@
             <!-- <p>Ut possimus qui ut temporibus culpa velit eveniet modi omnis est adipisci expedita at voluptas atque vitae autem.</p> -->
         </div>
 
-        <h1>quantity added: {{ added_to_cart }}</h1>
 
         <div class="row">
             {% for product in products %}
@@ -84,7 +83,7 @@
                                     <form class="row" method="POST">
                                         {% csrf_token %}
                                         <div class="col">
-                                          <input type="number" class="form-control" value="1" min="0" name= :"quantity_{{ product.id }}">
+                                          <input type="number" class="form-control" value="1" min="0" name= "quantity_{{ product.id }}">
                                      </div>
                                         <div class="col">
                                            <button type="submit" class="btn cart px-auto">ADD TO CART</button>
