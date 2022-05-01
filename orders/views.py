@@ -7,6 +7,7 @@ from psycopg2 import sql
 from .forms import *
 from django.db.models import Sum
 import json
+from django.db.models.base import ObjectDoesNotExist, MultipleObjectsReturned
 
 def index(request):
     return render(request, 'index.html', context={})
@@ -166,6 +167,24 @@ def stockManagement(request):
         'categories': IngredientCategory.objects.all(),
         'form': IngredientForm()
     }
+    if request.method == 'POST':
+        data = request.POST
+        action = data.get('action')
+        if action == "update":
+            try:
+                ingredient = Ingredient.objects.get(name=data.get('name'))
+            except ObjectDoesNotExist:
+                context['error'] = "Error: Ingredient not found."
+            except MultipleObjectsReturned:
+                context['error'] = "Error: Multiple ingredients found."
+            else:
+                if data.get('dropdown') == "increase":
+                    ingredient.quantity = ingredient.quantity + int(data.get('quantity'))
+                elif data.get('dropdown') == "decrease":
+                    ingredient.quantity = ingredient.quantity - int(data.get('quantity'))
+                else:
+                    ingredient.quantity = int(data.get('quantity'))
+                ingredient.save()
     return render(request, 'stockManagement.html', context=context)
 
 def updateProductImage(request, id):

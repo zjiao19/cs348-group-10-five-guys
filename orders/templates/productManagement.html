@@ -383,7 +383,7 @@
 
       <form class="product m-3 text-center row"
         {% if product|id_is:id %}
-          onload="alert();"
+          id="expended"
         {% endif %}
       onclick="showDetails(this);" action="{% url 'productManagement' id=product.id %}" method="POST">
         <input type="hidden" name="type" value="UPDATE">
