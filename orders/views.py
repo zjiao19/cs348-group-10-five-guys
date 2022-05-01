@@ -23,7 +23,7 @@ def menu(request):
         if len(current_orders) > 0:
             current_order = current_orders[0]
         else:
-            current_order = Order.objects.create(customer.request.user.id, is_complete = False)
+            current_order = Order.objects.create(customer = request.user, is_complete = False)
         post = dict(request.POST)
         quantity_add = 0
         item = ''
