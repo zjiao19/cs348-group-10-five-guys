@@ -184,7 +184,7 @@ def stockManagement(request):
         action = data.get('action')
         if action == "update":
             try:
-                ingredient = Ingredient.objects.get(name=data.get('name'))
+                test = Ingredient.objects.get(name=data.get('name'))
             except ObjectDoesNotExist:
                 context['error'] = "Error: Ingredient not found."
             except MultipleObjectsReturned:
