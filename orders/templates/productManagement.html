@@ -23,7 +23,7 @@
   }
 
   .product:hover {
-    border-color: rgb(255, 176, 59);
+    border-color: white;
   }
 
   .thumbnail {
@@ -151,7 +151,7 @@
     opacity: 0.9;
   }
 
-  #remove-product > div > form > .mask {
+  .remove-product > div > form > .mask {
     background-color: #dc3545;
   }
 
@@ -189,7 +189,7 @@
     border-top: thick solid rgb(255, 176, 59) !important;
     border-bottom: thick solid rgb(255, 176, 59) !important;
   }
-
+#
   .upload-image {
     position: absolute;
     height: 100%;
@@ -295,6 +295,20 @@
     background-color: #dc3545;
   }
 
+  .cancel-remove-btn {
+    width: 12rem;
+    background-color: #dc3545;
+    color: white;
+    text-align: center;
+    margin: 1rem;
+    padding: 1rem;
+    transition: background-color 0.5s;
+  }
+
+  .cancel-remove-btn:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
 </style>
 
 
@@ -309,6 +323,7 @@
 
 <div class="d-flex flex-row-reverse px-5 mx-5">
   <div class="remove-product-btn" onclick="removeProduct();">Remove Product</div>
+  <div class="cancel-remove-btn" onclick="cancelRemove();">Cancel</div>
   <div class="new-product-btn">New Product</div>
 </div>
 
@@ -382,7 +397,7 @@
 
 <script type="text/javascript">
     function removeProduct() {
-        
+        document.getElementById('products').classList.add('remove-product');
     }
 
     var unitOf = {

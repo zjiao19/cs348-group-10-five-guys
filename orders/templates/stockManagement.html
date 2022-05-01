@@ -21,9 +21,12 @@
             <div class="col-4">
                 <select class="form-select" aria-label=".form-select-sm example">
                     <option selected>---SELECT---</option>
-                    <option value="1">Chicken</option>
+                    <!-- <option value="1">Chicken</option>
                     <option value="2">Lettuce</option>
-                    <option value="3">Ketchup</option>
+                    <option value="3">Ketchup</option> -->
+                    {% for item in ingredients %}
+                    <option>{{ item.name }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="col-4">
@@ -34,7 +37,7 @@
                 </select>
             </div>
             <div class="col-3">
-                <input type="number" class="form-control" placeholder="amount" min="0">
+                <input type="number" class="form-control" placeholder="quantity" min="0">
             </div>
             <div class="col-1">
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -46,8 +49,8 @@
             <div class="col-lg-12 d-flex justify-content-center">
                 <ul id="menu-flters">
                     <li data-filter="*" class="filter-active">Show All</li>
-                    {{ for item in categories }}
-                    <li data-filter=".filter-{{ item.item.name }}">{{ item.item.name }}</li>
+                    {% for item in categories %}
+                    <li data-filter=".filter-{{ item.name }}">{{ item.name }}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -55,10 +58,9 @@
 
         <div class="row menu-container">
             {% for item in ingredients %}
-            <div class="col-lg-3 menu-item filter-{{ item.item.category.name }}">
+            <div class="col-lg-3 menu-item filter-{{ item.category.name }}">
                 <div class="menu-content">
-                    <a href="#">{{ item.item.name }}</a><span>QTY: {{ item.item.quantity}} {{
-                        item.item.unit }}</span>
+                    <a href="#">{{ item.name }}</a><span>{{ item.quantity }} {{ item.unit }}</span>
                 </div>
             </div>
             {% endfor %}
