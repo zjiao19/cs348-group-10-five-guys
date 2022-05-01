@@ -24,22 +24,30 @@ def menu(request):
         if len(current_orders) > 0:
             current_order = current_orders[0]
         else:
-            current_order = Order.objects.create(customer.request.user.id, is_complete = False)
+            current_order = Order.objects.create(customer = request.user, is_complete = False)
         post = dict(request.POST)
-        quantity = 0
+        quantity_add = 0
         item = ''
         for key, value in post.items():
             if 'quantity' in key:
                 item = str(key.split('_')[1]).replace('"', '')
                 item = int(item)
-                quantity = value[0]
-        with connection.cursor() as cursor:
-            cursor.execute(sql.SQL("BEGIN"))
-            cursor.execute(sql.SQL(f"""
-                INSERT INTO orders_iteminorder (quantity, item_id, order_id)
-                VALUES ({quantity},{item},{current_order.id});"""))
-            cursor.execute(sql.SQL("COMMIT"))
-
+                quantity_add = value[0]
+        id_list = ItemInOrder.objects.filter(order = current_order, item = item)
+        if len(id_list) == 0:
+            with connection.cursor() as cursor:
+                cursor.execute(sql.SQL("BEGIN"))
+                cursor.execute(sql.SQL(f"""
+                    INSERT INTO orders_iteminorder (quantity, item_id, order_id)
+                    VALUES ({quantity_add},{item},{current_order.id});"""))
+                cursor.execute(sql.SQL("COMMIT"))
+        else:
+            with connection.cursor() as cursor:
+                cursor.execute(sql.SQL("BEGIN"))
+                cursor.execute(sql.SQL(f"""
+                    UPDATE orders_iteminorder SET quantity = quantity + {quantity_add}
+                    WHERE item_id = {item};"""))
+                cursor.execute(sql.SQL("COMMIT"))
     return render(request, 'menu.html', context=context)
 
 
@@ -60,7 +68,10 @@ def cart(request):
         for key in post:
             if 'quantity' in key:
                 item_id = key.split('_')[1]
-                ItemInOrder.objects.filter(order = current_order, item = item_id).update(quantity = post[key][0])
+                if post[key][0] == '0':
+                    ItemInOrder.objects.filter(order = current_order, item = item_id).delete()
+                else:
+                    ItemInOrder.objects.filter(order = current_order, item = item_id).update(quantity = post[key][0])
         if post['action'][0] == "Place Order":
             ingredient_required = dict()
             for item in current_order.iteminorder_set.all():
@@ -75,7 +86,7 @@ def cart(request):
             # start transaction
             ingredient_error, ingredient_warning = None, None
             with connection.cursor() as cursor:
-                cursor.execute(sql.SQL("BEGIN"))
+                cursor.execute(sql.SQL("BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE"))
                 cursor.execute(sql.SQL("""
                         UPDATE orders_order SET is_complete = True
                         WHERE id = %s
