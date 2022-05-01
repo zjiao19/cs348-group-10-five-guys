@@ -190,28 +190,31 @@ def stockManagement(request):
             except MultipleObjectsReturned:
                 context['error'] = "Error: Multiple ingredients found."
             else:
-                with transaction.atomic():
-                    ingredient = Ingredient.objects.select_for_update().get(name=data.get('name')) 
-                    if data.get('dropdown') == "increase":
-                        quantity = ingredient.quantity + int(data.get('quantity'))
-                    elif data.get('dropdown') == "decrease":
-                        quantity = ingredient.quantity - int(data.get('quantity'))
-                    else:
-                        quantity = int(data.get('quantity'))
-                    if quantity < 0:
-                        context['error'] = "Error: Quantity cannot be negative."
-                    elif quantity < 100:
-                        for staff in User.objects.filter(is_staff=True):
-                            Alert.objects.create(
-                                staff = staff,
-                                is_read = False,
-                                message = f"Low Stock WARNING: we need more {ingredient.name}."
-                            )
-                        ingredient.quantity = quantity
-                        ingredient.save()
-                    else:
-                        ingredient.quantity = quantity
-                        ingredient.save()
+                if data.get('quantity') == '':
+                    context['error'] = "Error: Quantity cannot be empty."
+                else:
+                    with transaction.atomic():
+                        ingredient = Ingredient.objects.select_for_update().get(name=data.get('name')) 
+                        if data.get('dropdown') == "increase":
+                            quantity = ingredient.quantity + int(data.get('quantity'))
+                        elif data.get('dropdown') == "decrease":
+                            quantity = ingredient.quantity - int(data.get('quantity'))
+                        else:
+                            quantity = int(data.get('quantity'))
+                        if quantity < 0:
+                            context['error'] = "Error: Quantity cannot be negative."
+                        elif quantity < 100:
+                            for staff in User.objects.filter(is_staff=True):
+                                Alert.objects.create(
+                                    staff = staff,
+                                    is_read = False,
+                                    message = f"Low Stock WARNING: we need more {ingredient.name}."
+                                )
+                            ingredient.quantity = quantity
+                            ingredient.save()
+                        else:
+                            ingredient.quantity = quantity
+                            ingredient.save()
         elif action == "create":
             data = request.POST
             if data.get('name') == "":
