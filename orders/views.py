@@ -184,13 +184,14 @@ def stockManagement(request):
         action = data.get('action')
         if action == "update":
             try:
-                ingredient = Ingredient.objects.select_for_update().get(name=data.get('name'))
+                ingredient = Ingredient.objects.get(name=data.get('name'))
             except ObjectDoesNotExist:
                 context['error'] = "Error: Ingredient not found."
             except MultipleObjectsReturned:
                 context['error'] = "Error: Multiple ingredients found."
             else:
                 with transaction.atomic():
+                    ingredient = Ingredient.objects.select_for_update().get(name=data.get('name')) 
                     if data.get('dropdown') == "increase":
                         quantity = ingredient.quantity + int(data.get('quantity'))
                     elif data.get('dropdown') == "decrease":
