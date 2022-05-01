@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
-from django.db import connection
+from django.db import connection, transaction
 from django.shortcuts import render, redirect
 from orders.models import *
 from psycopg2 import sql
@@ -181,11 +181,20 @@ def stockManagement(request):
                 context['error'] = "Error: Multiple ingredients found."
             else:
                 if data.get('dropdown') == "increase":
-                    ingredient.quantity = ingredient.quantity + int(data.get('quantity'))
+                    quantity = ingredient.quantity + int(data.get('quantity'))
                 elif data.get('dropdown') == "decrease":
-                    ingredient.quantity = ingredient.quantity - int(data.get('quantity'))
+                    quantity = ingredient.quantity - int(data.get('quantity'))
                 else:
-                    ingredient.quantity = int(data.get('quantity'))
+                    quantity = int(data.get('quantity'))
+                if quantity < 0:
+                    context['error'] = "Error: Quantity cannot be negative."
+                elif quantity < 100:
+                    for staff in User.objects.filter(is_staff=True):
+                        Alert.objects.create(
+                            staff = staff,
+                            is_read = False,
+                            message = f"Low Stock WARNING: we need more {ingredient.name}."
+                        )
                 ingredient.save()
     return render(request, 'stockManagement.html', context=context)
 
