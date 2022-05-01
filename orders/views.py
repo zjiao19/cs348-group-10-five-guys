@@ -11,7 +11,6 @@ def index(request):
 
 def menu(request):
     context = {
-            'price': Product.objects.get(id=1).price,
             'products': Product.objects.all()
     }
     post = dict(request.POST)
@@ -119,7 +118,7 @@ def cart(request):
 def orderHistory(request):
     context = {
         'orders': list(Order.objects.filter(customer=request.user.id)),
-        'selected': 'date'
+        'selected': 'id'
     }
     if request.method == 'POST':
         if request.POST['order'] == 'price':
@@ -127,8 +126,12 @@ def orderHistory(request):
                 context['orders'][i].price = sum([_.item.price*_.quantity for _ in context['orders'][i].iteminorder_set.all()])
             context['orders'].sort(key=lambda _: _.price)
             context['selected'] = 'price'
+        elif request.POST['order'] == 'date':
+            context['orders'] = Order.objects.filter(customer=request.user.id).order_by('-date')
+            context['selected'] = 'date'
         else:
-            context['orders'] = Order.objects.filter(customer=request.user.id).order_by('date')
+            context['orders'] = Order.objects.filter(customer=request.user.id)
+            context['selected'] = 'id'
     return render(request, 'orderHistory.html', context=context)
 
 @login_required(login_url = "/")

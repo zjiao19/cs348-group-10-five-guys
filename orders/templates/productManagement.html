@@ -155,8 +155,16 @@
     background-color: #dc3545;
   }
 
+  .remove-product {
+    box-shadow: 0 0 0.5rem 0.5rem rgba(255, 0, 0, 0.3);
+  }
+
   #expended > .mask {
     display: none;
+  }
+
+  #expended > .mask-remove {
+    display: block !important;
   }
 
   #expended button {
@@ -186,10 +194,16 @@
     transition: 1s;
     flex: 0 0 100%;
     position: relative;
-    border-top: thick solid rgb(255, 176, 59) !important;
-    border-bottom: thick solid rgb(255, 176, 59) !important;
+    border-top: thick solid rgb(255, 176, 59);
+    border-bottom: thick solid rgb(255, 176, 59);
   }
-#
+
+  .remove-product #expended:hover {
+    background-color: #dc3545;
+    border-top: thick solid #dc3545;
+    border-bottom: thick solid #dc3545;
+  }
+
   .upload-image {
     position: absolute;
     height: 100%;
@@ -323,7 +337,7 @@
 
 <div class="d-flex flex-row-reverse px-5 mx-5">
   <div class="remove-product-btn" onclick="removeProduct();">Remove Product</div>
-  <div class="cancel-remove-btn" onclick="cancelRemove();">Cancel</div>
+  <div class="cancel-remove-btn d-none" onclick="cancelRemove();">Cancel</div>
   <div class="new-product-btn">New Product</div>
 </div>
 
@@ -385,9 +399,8 @@
           {% endfor %}
         </div>
         <button class="col-md-1 col-sm-12 p-2 my-2" type="submit">Update</button>
-        <div class="mask">
+        <div class="mask mask-product">
           <div class="centered">edit</div>
-          <div class="centered d-none">remove</div>
         </div>
       </form>
 
@@ -396,8 +409,29 @@
 </div>
 
 <script type="text/javascript">
+
     function removeProduct() {
-        document.getElementById('products').classList.add('remove-product');
+        document.querySelector('.cancel-remove-btn').classList.remove('d-none');
+        document.querySelector('.remove-product-btn').classList.add('d-none');
+        let products = document.getElementById('products');
+        products.classList.add('remove-product');
+        for (let mask of products.querySelectorAll('div.mask-product')) {
+            mask.classList.add('mask-remove');
+            mask.innerHTML = '<div class="centered">remove</div>'
+            mask.onclick = function() { alert(); };
+        }
+    }
+
+    function cancelRemove() {
+        document.querySelector('.cancel-remove-btn').classList.add('d-none');
+        document.querySelector('.remove-product-btn').classList.remove('d-none');
+        let products = document.getElementById('products');
+        products.classList.remove('remove-product');
+        for (let mask of products.querySelectorAll('div.mask-product')) {
+            mask.classList.remove('mask-remove');
+            mask.innerHTML = '<div class="centered">edit</div>'
+            mask.onclick = null;
+        }
     }
 
     var unitOf = {

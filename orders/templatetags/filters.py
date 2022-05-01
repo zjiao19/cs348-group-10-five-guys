@@ -39,7 +39,7 @@ def ingredient_quantity(recipe):
 
 @register.filter
 def order_price(order):
-    return sum([_.item.price*_.quantity for _ in order.iteminorder_set.all()])
+    return round(sum([_.item.price*_.quantity for _ in order.iteminorder_set.all()]), 2)
 
 @register.filter
 def order_items(order):

@@ -74,7 +74,7 @@
                             <div class="card-body text-center mx-auto">
                                 <div class='cvp'>
                                     <h5 class="card-title font-weight-bold">{{product.name}}</h5>
-                                    <p class="card-text">${{ product.price }}</p>
+                                    <p class="card-text">${{ product.price|floatformat:2 }}</p>
                                     <p class="card-text text-muted">
                                         {% for recipe in product.recipe_set.all%}
                                             {{recipe|ingredient_name}},&nbsp;
