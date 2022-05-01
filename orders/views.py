@@ -226,9 +226,10 @@ def productManagement(request, id=''):
             product = form.save()
             context['id'] = product.id
         return render(request, 'productManagement.html', context=context)
-
     if request.POST['type'] == 'DELETE':
-        return redirect('/')
+        Product.objects.filter(id=id).delete()
+        context['id'] = ''
+        return render(request, 'productManagement.html', context=context)
     if request.POST['type'] == 'UPDATE':
         return redirect('up/')
     if request.FILES:
