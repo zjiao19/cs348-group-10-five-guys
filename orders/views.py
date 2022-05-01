@@ -60,7 +60,10 @@ def cart(request):
         for key in post:
             if 'quantity' in key:
                 item_id = key.split('_')[1]
-                ItemInOrder.objects.filter(order = current_order, item = item_id).update(quantity = post[key][0])
+                if post[key][0] == '0':
+                    ItemInOrder.objects.filter(order = current_order, item = item_id).delete()
+                else:
+                    ItemInOrder.objects.filter(order = current_order, item = item_id).update(quantity = post[key][0])
         if post['action'][0] == "Place Order":
             ingredient_required = dict()
             for item in current_order.iteminorder_set.all():
@@ -75,7 +78,7 @@ def cart(request):
             # start transaction
             ingredient_error, ingredient_warning = None, None
             with connection.cursor() as cursor:
-                cursor.execute(sql.SQL("BEGIN"))
+                cursor.execute(sql.SQL("BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE"))
                 cursor.execute(sql.SQL("""
                         UPDATE orders_order SET is_complete = True
                         WHERE id = %s
