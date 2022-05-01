@@ -11,7 +11,10 @@ class UserAdmin(auth_admin.UserAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Product)
-admin.site.register(Ingredient)
+
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = ('name', 'quantity', 'unit')
+admin.site.register(Ingredient, IngredientAdmin)
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('product', 'ingredient', 'ingredient_quantity')
@@ -27,4 +30,8 @@ class ItemInOrderAdmin(admin.ModelAdmin):
     list_display = ('order', 'item', 'quantity')
 admin.site.register(ItemInOrder, ItemInOrderAdmin)
 
-admin.site.register(Alert)
+class AlertAdmin(admin.ModelAdmin):
+    list_display = ('staff', 'message')
+admin.site.register(Alert, AlertAdmin)
+
+admin.site.register(IngredientCategory)

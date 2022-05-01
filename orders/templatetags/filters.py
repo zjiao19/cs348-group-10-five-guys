@@ -1,5 +1,5 @@
 from django import template
-from orders.models import Ingredient
+from orders.models import Ingredient, Category
 
 register = template.Library()
 
@@ -13,12 +13,18 @@ def path(request):
     return request.path.split('/')[1]
 
 @register.filter
+def other_categories(product):
+    return [_ for _ in Category.objects.all() if _.id != product.category.id]
+
+@register.filter
 def unused_ingredients(product):
     used_ingredients = [_.ingredient for _ in product.recipe_set.all()]
     return [_ for _ in Ingredient.objects.all() if _ not in used_ingredients]
 
 @register.filter
 def id_is(product, id):
+    if isinstance(id, str) and id.isnumeric():
+        id = int(id)
     return product.id == id
 
 @register.filter
@@ -39,7 +45,7 @@ def ingredient_quantity(recipe):
 
 @register.filter
 def order_price(order):
-    return sum([_.item.price*_.quantity for _ in order.iteminorder_set.all()])
+    return round(sum([_.item.price*_.quantity for _ in order.iteminorder_set.all()]), 2)
 
 @register.filter
 def order_items(order):

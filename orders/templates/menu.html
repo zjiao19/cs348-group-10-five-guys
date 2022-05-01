@@ -63,7 +63,6 @@
             <!-- <p>Ut possimus qui ut temporibus culpa velit eveniet modi omnis est adipisci expedita at voluptas atque vitae autem.</p> -->
         </div>
 
-        <h1>quantity added: {{ added_to_cart }}</h1>
 
         <div class="row">
             {% for product in products %}
@@ -74,7 +73,7 @@
                             <div class="card-body text-center mx-auto">
                                 <div class='cvp'>
                                     <h5 class="card-title font-weight-bold">{{product.name}}</h5>
-                                    <p class="card-text">${{ product.price }}</p>
+                                    <p class="card-text">${{ product.price|floatformat:2 }}</p>
                                     <p class="card-text text-muted">
                                         {% for recipe in product.recipe_set.all%}
                                             {{recipe|ingredient_name}},&nbsp;
@@ -84,7 +83,7 @@
                                     <form class="row" method="POST">
                                         {% csrf_token %}
                                         <div class="col">
-                                           <input type="number" class="form-control" value="1" min="0" name="quantity">
+                                          <input type="number" class="form-control" value="1" min="0" name= "quantity_{{ product.id }}">
                                      </div>
                                         <div class="col">
                                            <button type="submit" class="btn cart px-auto">ADD TO CART</button>
@@ -98,101 +97,5 @@
             {% endfor %}
 
 
-
-            <div class="col-lg-4 col-md-6">
-                <div class='container-fluid'>
-                    <div class="card mx-auto col-md-3 col-10 mt-5"> 
-                        <img class='mx-auto img-thumbnail' src="{% static 'img/items/big-mac.jpeg' %}" width="auto" height="auto" />
-                        <div class="card-body text-center mx-auto">
-                            <div class='cvp'>
-                                <h5 class="card-title font-weight-bold">Big Mac</h5>
-                                <p class="card-text">${{ price }}</p> 
-                                <p class="card-text text-muted">Bun, beef, ketchup, cheese, pickle, cheese, pickle</p> 
-                                <form class="row">
-                                    <div class="col">
-                                        <input type="number" class="form-control" value="1" min="0">
-                                    </div>
-                                    <div class="col">
-                                        <button type="submit" class="btn cart px-auto">ADD TO CART</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class='container-fluid'>
-                    <div class="card mx-auto col-md-3 col-10 mt-5"> 
-                        <img class='mx-auto img-thumbnail' src="{% static 'img/items/cheese-burger.jpeg' %}" width="auto" height="auto" />
-                        <div class="card-body text-center mx-auto">
-                            <div class='cvp'>
-                                <h5 class="card-title font-weight-bold">Cheeseburger</h5>
-                                <p class="card-text">$2.49</p> 
-                                <p class="card-text text-muted">Bun, beef, ketchup, cheese, pickle, cheese, pickle</p> 
-                                <form class="row">
-                                    <div class="col">
-                                        <input type="number" class="form-control" value="1" min="0">
-                                    </div>
-                                    <div class="col">
-                                        <button type="submit" class="btn cart px-auto">ADD TO CART</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class='container-fluid'>
-                    <div class="card mx-auto col-md-3 col-10 mt-5"> 
-                        <img class='mx-auto img-thumbnail' src="{% static 'img/items/fries.jpeg' %}" width="auto" height="auto" />
-                        <div class="card-body text-center mx-auto">
-                            <div class='cvp'>
-                                <h5 class="card-title font-weight-bold">French Fries</h5>
-                                <p class="card-text">$2.49</p> 
-                                <p class="card-text text-muted">Potato</p> 
-                                <form class="row">
-                                    <div class="col">
-                                        <input type="number" class="form-control" value="1" min="0">
-                                    </div>
-                                    <div class="col">
-                                        <button type="submit" class="btn cart px-auto">ADD TO CART</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class='container-fluid'>
-                    <div class="card mx-auto col-md-3 col-10 mt-5">
-                        <img class='mx-auto img-thumbnail' src="{% static 'img/items/fries.jpeg' %}" width="auto" height="auto" />
-                        <div class="card-body text-center mx-auto">
-                            <div class='cvp'>
-                                <h5 class="card-title font-weight-bold">Milkshake</h5>
-                                <p class="card-text">$2.49</p>
-                                <p class="card-text text-muted">Vanilla Ice Cream, Whole Milk, Vanilla Extract </p>
-                                <form class="row">
-                                    <div class="col">
-                                        <input type="number" class="form-control" value="1" min="0">
-                                    </div>
-                                    <div class="col">
-                                        <button type="submit" class="btn cart px-auto">ADD TO CART</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-        </div>
-    </div>
-</section>
 
 {% endblock %}

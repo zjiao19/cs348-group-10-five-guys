@@ -20,6 +20,7 @@
         <form method = "POST">
           {% csrf_token %}
           <select name="order" id="order" onchange="this.parentElement.submit();">
+            <option value="id" {% if selected == 'id' %} selected {% endif %}>Id</option>
             <option value="date" {% if selected == 'date' %} selected {% endif %}>Date</option>
             <option value="price" {% if selected == 'price' %} selected {% endif %}>Price</option>
           </select>
@@ -40,7 +41,7 @@
                 {% endfor %}
               </div>
             </div>
-              <p class="m-auto mt-4 text-center">total price: {{ order|order_price }}<p>
+              <p class="m-auto mt-4 text-center">total price: ${{ order|order_price }}<p>
           </div>
         {% endfor %}
 

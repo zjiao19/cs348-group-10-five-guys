@@ -1,21 +1,45 @@
-from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import authenticate, login, logout
 from django.db import connection
 from django.shortcuts import render, redirect
 from orders.models import *
 from psycopg2 import sql
 from .forms import *
 from django.db.models import Sum
+import json
+from django.db.models.base import ObjectDoesNotExist, MultipleObjectsReturned
+
 def index(request):
     return render(request, 'index.html', context={})
 
+@login_required(login_url='/menu/logIn')
 def menu(request):
     context = {
-            'price': Product.objects.get(id=1).price,
-            'products': Product.objects.all()
+         'products': Product.objects.all()
     }
-    if request.method == 'POST':
-        context['added_to_cart'] = request.POST['quantity']
+    if (request.method == "POST"):
+        current_orders = Order.objects.filter(customer=request.user.id, is_complete=False)
+        current_order = ''
+        if len(current_orders) > 0:
+            current_order = current_orders[0]
+        else:
+            current_order = Order.objects.create(customer.request.user.id, is_complete = False)
+        post = dict(request.POST)
+        quantity = 0
+        item = ''
+        for key, value in post.items():
+            if 'quantity' in key:
+                item = str(key.split('_')[1]).replace('"', '')
+                item = int(item)
+                quantity = value[0]
+        with connection.cursor() as cursor:
+            cursor.execute(sql.SQL("BEGIN"))
+            cursor.execute(sql.SQL(f"""
+                INSERT INTO orders_iteminorder (quantity, item_id, order_id)
+                VALUES ({quantity},{item},{current_order.id});"""))
+            cursor.execute(sql.SQL("COMMIT"))
+
     return render(request, 'menu.html', context=context)
 
 
@@ -108,7 +132,7 @@ def cart(request):
 def orderHistory(request):
     context = {
         'orders': list(Order.objects.filter(customer=request.user.id)),
-        'selected': 'date'
+        'selected': 'id'
     }
     if request.method == 'POST':
         if request.POST['order'] == 'price':
@@ -116,8 +140,12 @@ def orderHistory(request):
                 context['orders'][i].price = sum([_.item.price*_.quantity for _ in context['orders'][i].iteminorder_set.all()])
             context['orders'].sort(key=lambda _: _.price)
             context['selected'] = 'price'
+        elif request.POST['order'] == 'date':
+            context['orders'] = Order.objects.filter(customer=request.user.id).order_by('-date')
+            context['selected'] = 'date'
         else:
-            context['orders'] = Order.objects.filter(customer=request.user.id).order_by('date')
+            context['orders'] = Order.objects.filter(customer=request.user.id)
+            context['selected'] = 'id'
     return render(request, 'orderHistory.html', context=context)
 
 @login_required(login_url = "/")
@@ -134,8 +162,32 @@ def message(request):
             }
     return render(request, 'message.html', context=context)
 
+@staff_member_required(login_url = "/stockManagement/logIn")
 def stockManagement(request):
-    return render(request, 'stockManagement.html', context={})
+    context = {
+        'ingredients': Ingredient.objects.all(),
+        'categories': IngredientCategory.objects.all(),
+        'form': IngredientForm()
+    }
+    if request.method == 'POST':
+        data = request.POST
+        action = data.get('action')
+        if action == "update":
+            try:
+                ingredient = Ingredient.objects.get(name=data.get('name'))
+            except ObjectDoesNotExist:
+                context['error'] = "Error: Ingredient not found."
+            except MultipleObjectsReturned:
+                context['error'] = "Error: Multiple ingredients found."
+            else:
+                if data.get('dropdown') == "increase":
+                    ingredient.quantity = ingredient.quantity + int(data.get('quantity'))
+                elif data.get('dropdown') == "decrease":
+                    ingredient.quantity = ingredient.quantity - int(data.get('quantity'))
+                else:
+                    ingredient.quantity = int(data.get('quantity'))
+                ingredient.save()
+    return render(request, 'stockManagement.html', context=context)
 
 def updateProductImage(request, id):
     form = ImageForm(request.POST, request.FILES)
@@ -156,19 +208,34 @@ def updateProductInfo(request, id):
                 WHERE id = %s AND {args[1]} IS DISTINCT FROM %s
             ''', args[2:])
 
-def productManagement(request, id):
-    if request.method == 'POST':
-        if request.FILES:
-            updateProductImage(request, id)
-        else:
-            updateProductInfo(request, id)
+@login_required(login_url='/productManagement/logIn')
+def productManagement(request, id=''):
+    if not request.user.is_staff:
+        return redirect('/')
     context = {
+            'categories': Category.objects.all(),
+            'ingredients': Ingredient.objects.all(),
             'products': Product.objects.all(),
-            'current_product_id': int(id),
-            'form': ImageForm(),
+            'id': id,
     }
-    with open('form.log', 'w') as f:
-        f.write(f'{context["form"]}\n{context["form"].as_p()}')
+    if request.method == 'GET':
+        return render(request, 'productManagement.html', context=context)
+    if request.POST['type'] == 'CREATE':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save()
+            context['id'] = product.id
+        return render(request, 'productManagement.html', context=context)
+    if request.POST['type'] == 'DELETE':
+        Product.objects.filter(id=id).delete()
+        context['id'] = ''
+        return render(request, 'productManagement.html', context=context)
+    if request.POST['type'] == 'UPDATE':
+        return redirect('up/')
+    if request.FILES:
+        updateProductImage(request, id)
+    else:
+        updateProductInfo(request, id)
     return render(request, 'productManagement.html', context=context)
 
 def logIn(request, next):
