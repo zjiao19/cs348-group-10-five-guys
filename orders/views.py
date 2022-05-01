@@ -207,7 +207,11 @@ def stockManagement(request):
                                 is_read = False,
                                 message = f"Low Stock WARNING: we need more {ingredient.name}."
                             )
-                    ingredient.save()
+                        ingredient.quantity = quantity
+                        ingredient.save()
+                    else:
+                        ingredient.quantity = quantity
+                        ingredient.save()
         elif action == "create":
             data = request.POST
             if data.get('name') == "":
