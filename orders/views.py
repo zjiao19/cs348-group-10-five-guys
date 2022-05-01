@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
-from django.db import connection
+from django.db import connection, transaction
 from django.shortcuts import render, redirect
 from orders.models import *
 from psycopg2 import sql
@@ -165,7 +164,6 @@ def message(request):
             }
     return render(request, 'message.html', context=context)
 
-@staff_member_required(login_url = "/stockManagement/logIn")
 def stockManagement(request):
     context = {
         'ingredients': Ingredient.objects.all(),
@@ -184,17 +182,27 @@ def stockManagement(request):
                 context['error'] = "Error: Multiple ingredients found."
             else:
                 if data.get('dropdown') == "increase":
-                    ingredient.quantity = ingredient.quantity + int(data.get('quantity'))
+                    quantity = ingredient.quantity + int(data.get('quantity'))
                 elif data.get('dropdown') == "decrease":
-                    ingredient.quantity = ingredient.quantity - int(data.get('quantity'))
+                    quantity = ingredient.quantity - int(data.get('quantity'))
                 else:
-                    ingredient.quantity = int(data.get('quantity'))
+                    quantity = int(data.get('quantity'))
+                if quantity < 0:
+                    context['error'] = "Error: Quantity cannot be negative."
+                elif quantity < 100:
+                    for staff in User.objects.filter(is_staff=True):
+                        Alert.objects.create(
+                            staff = staff,
+                            is_read = False,
+                            message = f"Low Stock WARNING: we need more {ingredient.name}."
+                        )
                 ingredient.save()
     return render(request, 'stockManagement.html', context=context)
 
 def updateProductImage(request, id):
     form = ImageForm(request.POST, request.FILES)
-    if not form.is_valid(): return
+    if not form.is_valid():
+        return
     product = Product.objects.get(id=id)
     product.image = form.cleaned_data['image']
     product.save()
@@ -202,14 +210,24 @@ def updateProductImage(request, id):
 def updateProductInfo(request, id):
     with connection.cursor() as cursor:
         for k, v in request.POST.items():
-            if k == 'csrfmiddlewaretoken': continue
             args = k.split('|')
-            args.insert(2, v)
-            args.append(v)
-            cursor.execute(f'''
-                UPDATE orders_{args[0]} SET {args[1]} = %s
-                WHERE id = %s AND {args[1]} IS DISTINCT FROM %s
-            ''', args[2:])
+            if args[0] == 'remove_ingredient':
+                Recipe.objects.filter(id=args[1]).delete()
+            elif args[0] == 'new_ingredient':
+                recipe = RecipeForm({
+                    'product': id,
+                    'ingredient': v,
+                    'ingredient_quantity': request.POST['new_ingredient_quantity|'+args[1]]
+                })
+                if recipe.is_valid():
+                    recipe.save()
+            elif args[0] in ['product', 'recipe']:
+                args.insert(2, v)
+                args.append(v)
+                cursor.execute(f'''
+                    UPDATE orders_{args[0]} SET {args[1]} = %s
+                    WHERE id = %s AND {args[1]} IS DISTINCT FROM %s
+                ''', args[2:])
 
 @login_required(login_url='/productManagement/logIn')
 def productManagement(request, id=''):
@@ -228,16 +246,12 @@ def productManagement(request, id=''):
         if form.is_valid():
             product = form.save()
             context['id'] = product.id
-        return render(request, 'productManagement.html', context=context)
-    if request.POST['type'] == 'DELETE':
+    elif request.POST['type'] == 'DELETE':
         Product.objects.filter(id=id).delete()
         context['id'] = ''
-        return render(request, 'productManagement.html', context=context)
-    if request.POST['type'] == 'UPDATE':
-        return redirect('up/')
-    if request.FILES:
-        updateProductImage(request, id)
-    else:
+    elif request.POST['type'] == 'UPDATE':
+        if request.FILES:
+            updateProductImage(request, id)
         updateProductInfo(request, id)
     return render(request, 'productManagement.html', context=context)
 
