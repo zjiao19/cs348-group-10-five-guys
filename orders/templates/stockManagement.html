@@ -43,33 +43,33 @@
         <form method="POST" class="row">
             {% csrf_token %}
             <div class="col-3">
-                <input class="form-control" placeholder="Ingredient name">
+                <input class="form-control" placeholder="Ingredient name" name="name">
             </div>
             <div class="col-3">
-                <select class="form-select" aria-label=".form-select-sm example">
-                    <option selected>Category</option>
+                <select class="form-select" aria-label=".form-select-sm example" name="dropdown">
+                    <option selected value="empty">Category</option>
                     {% for item in categories %}
-                    <option name="category">{{ item.name }}</option>
+                    <option name="category" value="{{ item.name }}">{{ item.name }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="col-3">
-                <input type="number" class="form-control" placeholder="Quantity">
+                <input type="number" class="form-control" placeholder="Quantity" name="quantity">
             </div>
             <div class="col-2">
-                <input class="form-control" placeholder="Unit">
+                <input class="form-control" placeholder="Unit" name="unit">
             </div>
             <div class="col-1">
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="submit" class="btn btn-primary" name="action" value="create">Create</button>
             </div>
         </form>
         <form method="POST" class="row">
             {% csrf_token %}
             <div class="col-11">
-                <input class="form-control" placeholder="Ingredient name">
+                <input class="form-control" placeholder="Ingredient name" name="name">
             </div>
             <div class="col-1">
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="submit" class="btn btn-danger" name="action" value="delete">Delete</button>
             </div>
         </form>
         <!-- <form method="POST">
