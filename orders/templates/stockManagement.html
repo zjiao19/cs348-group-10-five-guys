@@ -16,8 +16,12 @@
         <div class="section-title">
             <h2><span>Stock Management</span></h2>
         </div>
-
-        <form method="POST" class="row">
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+        <form method="POST" class="row mb-2">
             {% csrf_token %}
             <div class="col-4">
                 <input class="form-control" placeholder="Ingredient name" name="name">

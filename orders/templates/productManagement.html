@@ -466,6 +466,8 @@
 
 <script type="text/javascript">
 
+    window.onload = showDetails(document.getElementById('expended'));
+
     function roundPrice(el) {
         let priceInput = el.querySelector('.price');
         priceInput.value = parseFloat(priceInput.value).toFixed(2);
