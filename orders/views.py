@@ -162,7 +162,7 @@ def message(request):
             }
     return render(request, 'message.html', context=context)
 
-@staff_member_required(login_url = "/")
+@staff_member_required(login_url = "/stockManagement/logIn")
 def stockManagement(request):
     context = {
         'ingredients': Ingredient.objects.all(),
