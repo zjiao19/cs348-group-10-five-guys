@@ -219,6 +219,8 @@ def stockManagement(request):
             data = request.POST
             if data.get('name') == "":
                 context['error'] = "Error: Ingredient name cannot be empty."
+            elif data.get('quantity') == "":
+                context['error'] = "Error: Quantity cannot be empty."
             elif int(data.get('quantity')) < 0:
                 context['error'] = "Error: Quantity cannot be negative."
             elif data.get('category') == "empty":
