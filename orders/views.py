@@ -151,7 +151,8 @@ def message(request):
 def stockManagement(request):
     context = {
         'ingredients': Ingredient.objects.all(),
-        'categories': IngredientCategory.objects.all()
+        'categories': IngredientCategory.objects.all(),
+        'form': IngredientForm()
     }
     return render(request, 'stockManagement.html', context=context)
 
