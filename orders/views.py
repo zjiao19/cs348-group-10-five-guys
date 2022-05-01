@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import authenticate, login, logout
 from django.db import connection
 from django.shortcuts import render, redirect
 from orders.models import *
@@ -8,26 +9,37 @@ from .forms import *
 from django.db.models import Sum
 import json
 from django.db.models.base import ObjectDoesNotExist, MultipleObjectsReturned
+
 def index(request):
     return render(request, 'index.html', context={})
 
+@login_required(login_url='/menu/logIn')
 def menu(request):
     context = {
-            'products': Product.objects.all()
+         'products': Product.objects.all()
     }
-    post = dict(request.POST)
-    quantity = 0,
-    item = ''
-    # Insert new order
-    with connection.cursor() as cursor:
-        cursor.execute(sql.SQL("BEGIN"))
-        cursor.execute(sql.SQL("COMMIT"))
+    if (request.method == "POST"):
+        current_orders = Order.objects.filter(customer=request.user.id, is_complete=False)
+        current_order = ''
+        if len(current_orders) > 0:
+            current_order = current_orders[0]
+        else:
+            current_order = Order.objects.create(customer.request.user.id, is_complete = False)
+        post = dict(request.POST)
+        quantity = 0
+        item = ''
+        for key, value in post.items():
+            if 'quantity' in key:
+                item = str(key.split('_')[1]).replace('"', '')
+                item = int(item)
+                quantity = value[0]
+        with connection.cursor() as cursor:
+            cursor.execute(sql.SQL("BEGIN"))
+            cursor.execute(sql.SQL(f"""
+                INSERT INTO orders_iteminorder (quantity, item_id, order_id)
+                VALUES ({quantity},{item},{current_order.id});"""))
+            cursor.execute(sql.SQL("COMMIT"))
 
-
-
-
-    with open('menu.log','w') as f:
-        f.write(json.dumps(request.POST))
     return render(request, 'menu.html', context=context)
 
 
@@ -197,17 +209,32 @@ def updateProductInfo(request, id):
             ''', args[2:])
 
 @login_required(login_url='/productManagement/logIn')
-def productManagement(request, id):
-    if request.method == 'POST':
-        if request.FILES:
-            updateProductImage(request, id)
-        else:
-            updateProductInfo(request, id)
+def productManagement(request, id=''):
+    if not request.user.is_staff:
+        return redirect('/')
     context = {
+            'categories': Category.objects.all(),
             'ingredients': Ingredient.objects.all(),
             'products': Product.objects.all(),
-            'current_product_id': int(id),
+            'id': id,
     }
+    if request.method == 'GET':
+        return render(request, 'productManagement.html', context=context)
+    if request.POST['type'] == 'CREATE':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save()
+            context['id'] = product.id
+        return render(request, 'productManagement.html', context=context)
+
+    if request.POST['type'] == 'DELETE':
+        return redirect('/')
+    if request.POST['type'] == 'UPDATE':
+        return redirect('up/')
+    if request.FILES:
+        updateProductImage(request, id)
+    else:
+        updateProductInfo(request, id)
     return render(request, 'productManagement.html', context=context)
 
 def logIn(request, next):

@@ -12,6 +12,6 @@ urlpatterns = [
     path('orderHistory', views.orderHistory, name='orderHistory'),
     path('message', views.message, name='message'),
     path('stockManagement', views.stockManagement, name='stockManagement'),
-    path('productManagement/', RedirectView.as_view(url='0'), name='productManagement'),
-    re_path(r'^productManagement/(?P<id>\d+)$', views.productManagement, name='productManagement'),
+    path('productManagement', views.productManagement, name='productManagement'),
+    re_path(r'^productManagement/(?P<id>\d*)$', views.productManagement, name='productManagement'),
 ]
