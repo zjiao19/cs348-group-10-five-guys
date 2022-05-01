@@ -17,13 +17,11 @@
             <h2><span>Stock Management</span></h2>
         </div>
 
-        <form class="row">
+        <form method="POST" class="row">
+            {% csrf_token %}
             <div class="col-4">
                 <select class="form-select" aria-label=".form-select-sm example">
                     <option selected>---SELECT---</option>
-                    <!-- <option value="1">Chicken</option>
-                    <option value="2">Lettuce</option>
-                    <option value="3">Ketchup</option> -->
                     {% for item in ingredients %}
                     <option>{{ item.name }}</option>
                     {% endfor %}
@@ -48,9 +46,9 @@
         <div class="row">
             <div class="col-lg-12 d-flex justify-content-center">
                 <ul id="menu-flters">
-                    <li data-filter="*" class="filter-active">Show All</li>
+                    <li onclick="changeDropdown()" data-filter="*" class="filter-active">Show All</li>
                     {% for item in categories %}
-                    <li data-filter=".filter-{{ item.name }}">{{ item.name }}</li>
+                    <li onclick="changeDropdown()" data-filter=".filter-{{ item.name }}">{{ item.name }}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -60,7 +58,7 @@
             {% for item in ingredients %}
             <div class="col-lg-3 menu-item filter-{{ item.category.name }}">
                 <div class="menu-content">
-                    <a href="#">{{ item.name }}</a><span>{{ item.quantity }} {{ item.unit }}</span>
+                    <a href="#">{{ item.name }}</a><span>{{ item.quantity }} {{ item.unit | floatformat:2 }}</span>
                 </div>
             </div>
             {% endfor %}
@@ -68,5 +66,7 @@
 
     </div>
 </section><!-- End Menu Section -->
+
+
 
 {% endblock %}
