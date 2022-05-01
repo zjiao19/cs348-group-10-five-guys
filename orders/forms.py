@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import forms as auth_forms
-from .models import Ingredient, Product, User
+from .models import Ingredient, Product, Recipe, User
 
 class UserCreationForm(auth_forms.UserCreationForm):
     class Meta(auth_forms.UserCreationForm.Meta):
@@ -17,6 +17,11 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'price', 'category']
+
+class RecipeForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = '__all__'
 
 class IngredientForm(forms.ModelForm):
     class Meta:
