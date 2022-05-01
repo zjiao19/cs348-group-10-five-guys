@@ -75,9 +75,8 @@
                                     <h5 class="card-title font-weight-bold">{{product.name}}</h5>
                                     <p class="card-text">${{ product.price|floatformat:2 }}</p>
                                     <p class="card-text text-muted">
-                                        {% for recipe in product.recipe_set.all%}
-                                            {{recipe|ingredient_name}},&nbsp;
-
+                                        {% for recipe in product.recipe_set.all %}
+                                          {{ recipe.ingredient.name | capfirst }}{% if recipe != product.recipe_set.all.last %},&nbsp;{% endif %}
                                         {%endfor%}
                                     </p>
                                     <form class="row" method="POST">
