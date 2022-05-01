@@ -25,20 +25,28 @@ def menu(request):
         else:
             current_order = Order.objects.create(customer.request.user.id, is_complete = False)
         post = dict(request.POST)
-        quantity = 0
+        quantity_add = 0
         item = ''
         for key, value in post.items():
             if 'quantity' in key:
                 item = str(key.split('_')[1]).replace('"', '')
                 item = int(item)
-                quantity = value[0]
-        with connection.cursor() as cursor:
-            cursor.execute(sql.SQL("BEGIN"))
-            cursor.execute(sql.SQL(f"""
-                INSERT INTO orders_iteminorder (quantity, item_id, order_id)
-                VALUES ({quantity},{item},{current_order.id});"""))
-            cursor.execute(sql.SQL("COMMIT"))
-
+                quantity_add = value[0]
+        id_list = ItemInOrder.objects.filter(order = current_order, item = item)
+        if len(id_list) == 0:
+            with connection.cursor() as cursor:
+                cursor.execute(sql.SQL("BEGIN"))
+                cursor.execute(sql.SQL(f"""
+                    INSERT INTO orders_iteminorder (quantity, item_id, order_id)
+                    VALUES ({quantity_add},{item},{current_order.id});"""))
+                cursor.execute(sql.SQL("COMMIT"))
+        else:
+            with connection.cursor() as cursor:
+                cursor.execute(sql.SQL("BEGIN"))
+                cursor.execute(sql.SQL(f"""
+                    UPDATE orders_iteminorder SET quantity = quantity + {quantity_add}
+                    WHERE item_id = {item};"""))
+                cursor.execute(sql.SQL("COMMIT"))
     return render(request, 'menu.html', context=context)
 
 
