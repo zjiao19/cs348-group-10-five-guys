@@ -1,3 +1,4 @@
+from unicodedata import category
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.db import connection, transaction
@@ -183,28 +184,64 @@ def stockManagement(request):
         action = data.get('action')
         if action == "update":
             try:
+                ingredient = Ingredient.objects.select_for_update().get(name=data.get('name'))
+            except ObjectDoesNotExist:
+                context['error'] = "Error: Ingredient not found."
+            except MultipleObjectsReturned:
+                context['error'] = "Error: Multiple ingredients found."
+            else:
+                with transaction.atomic():
+                    if data.get('dropdown') == "increase":
+                        quantity = ingredient.quantity + int(data.get('quantity'))
+                    elif data.get('dropdown') == "decrease":
+                        quantity = ingredient.quantity - int(data.get('quantity'))
+                    else:
+                        quantity = int(data.get('quantity'))
+                    if quantity < 0:
+                        context['error'] = "Error: Quantity cannot be negative."
+                    elif quantity < 100:
+                        for staff in User.objects.filter(is_staff=True):
+                            Alert.objects.create(
+                                staff = staff,
+                                is_read = False,
+                                message = f"Low Stock WARNING: we need more {ingredient.name}."
+                            )
+                    ingredient.save()
+        elif action == "create":
+            data = request.POST
+            if data.get('name') == "":
+                context['error'] = "Error: Ingredient name cannot be empty."
+            elif data.get('quantity') < 0:
+                context['error'] = "Error: Quantity cannot be negative."
+            elif data.get('category') == "empty":
+                context['error'] = "Error: Category cannot be empty."
+            elif data.get('unit') == "":
+                context['error'] = "Error: Unit cannot be empty."
+            else:
+                with transaction.atomic():
+                    Ingredient.objects.create(
+                        name = data.get('name'),
+                        quantity = data.get('quantity'),
+                        category = IngredientCategory.objects.get(name=data.get('category')),
+                        unit = data.get('unit')
+                    )
+                    if data.get('quantity') < 100:
+                        for staff in User.objects.filter(is_staff=True):
+                            Alert.objects.create(
+                                staff = staff,
+                                is_read = False,
+                                message = f"Low Stock WARNING: we need more {data.get('name')}."
+                            )
+        elif action == "delete":
+            try:
                 ingredient = Ingredient.objects.get(name=data.get('name'))
             except ObjectDoesNotExist:
                 context['error'] = "Error: Ingredient not found."
             except MultipleObjectsReturned:
                 context['error'] = "Error: Multiple ingredients found."
             else:
-                if data.get('dropdown') == "increase":
-                    quantity = ingredient.quantity + int(data.get('quantity'))
-                elif data.get('dropdown') == "decrease":
-                    quantity = ingredient.quantity - int(data.get('quantity'))
-                else:
-                    quantity = int(data.get('quantity'))
-                if quantity < 0:
-                    context['error'] = "Error: Quantity cannot be negative."
-                elif quantity < 100:
-                    for staff in User.objects.filter(is_staff=True):
-                        Alert.objects.create(
-                            staff = staff,
-                            is_read = False,
-                            message = f"Low Stock WARNING: we need more {ingredient.name}."
-                        )
-                ingredient.save()
+                with connection.cursor() as cursor:
+                    cursor.execute("""DELETE FROM orders_ingredient where name = %s""", [data.get('name')])
     return render(request, 'stockManagement.html', context=context)
 
 def updateProductImage(request, id):
