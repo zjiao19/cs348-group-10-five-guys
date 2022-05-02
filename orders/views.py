@@ -219,12 +219,14 @@ def stockManagement(request):
             data = request.POST
             if data.get('name') == "":
                 context['error'] = "Error: Ingredient name cannot be empty."
+            elif Ingredient.objects.filter(name=data.get('name')).exists():
+                context['error'] = "Error: Ingredient already exists."
+            elif data.get('category') == "empty":
+                context['error'] = "Error: Category cannot be empty."
             elif data.get('quantity') == "":
                 context['error'] = "Error: Quantity cannot be empty."
             elif int(data.get('quantity')) < 0:
                 context['error'] = "Error: Quantity cannot be negative."
-            elif data.get('category') == "empty":
-                context['error'] = "Error: Category cannot be empty."
             elif data.get('unit') == "":
                 context['error'] = "Error: Unit cannot be empty."
             else:
