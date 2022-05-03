@@ -12,8 +12,8 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="{% static 'img/favicon.png'%}" rel="icon">
-    <link href="{% static 'img/apple-touch-icon.png'%}" rel="apple-touch-icon">
+    <link href="{% static 'img/favicon_fg.jpg' %}" rel="icon">
+    <link href="{% static 'img/favicon_fg.jpg' %}" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link
@@ -84,9 +84,9 @@
             </nav><!-- .navbar -->
 
             {% if request.user.is_authenticated %}
-              <a href="{% url 'logOut' next=request|path %}" class="book-a-table-btn">Log Out</a>
+              <a href="{% url 'logOut' next=request|path %}" class="book-a-table-btn" style="border-radius: 1rem; padding: 0.5rem 1rem;">Log Out</a>
             {% else %}
-              <a href="{% url 'logIn' next=request|path %}" class="book-a-table-btn">Log In</a>
+              <a href="{% url 'logIn' next=request|path %}" class="book-a-table-btn" style="border-radius: 1rem; padding: 0.5rem 1rem;">Log In</a>
             {% endif %}
 
         </div>

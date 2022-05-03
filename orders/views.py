@@ -145,32 +145,47 @@ def orderHistory(request):
         'orders': list(Order.objects.filter(customer=request.user.id)),
         'selected': 'id'
     }
+
     if request.method == 'POST':
-        if request.POST['order'] == 'price':
+        if request.POST['ordering'] == 'price':
             for i in range(len(context['orders'])):
-                context['orders'][i].price = sum([_.item.price*_.quantity for _ in context['orders'][i].iteminorder_set.all()])
+                price = 0
+                for item in context['orders'][i].iteminorder_set.all():
+                    price = price + item.item.price * item.quantity
+                context["orders"][i].price = price
             context['orders'].sort(key=lambda _: _.price)
             context['selected'] = 'price'
-        elif request.POST['order'] == 'date':
+        elif request.POST['ordering'] == 'date':
             context['orders'] = Order.objects.filter(customer=request.user.id).order_by('-date')
             context['selected'] = 'date'
+        elif request.POST['ordering'] == 'status':
+            context['orders'] = Order.objects.filter(customer=request.user.id).order_by('is_complete')
+            context['selected'] = 'status'
         else:
             context['orders'] = Order.objects.filter(customer=request.user.id)
             context['selected'] = 'id'
+
     return render(request, 'orderHistory.html', context=context)
 
 @login_required(login_url = "/")
 def message(request):
-    if request.method == 'POST':
-        if 'delete' in request.POST:
-            with connection.cursor() as cursor:
-                cursor.execute("""DELETE FROM orders_alert where id = %s""", [request.POST['message_id']])
-        else:
-            with connection.cursor() as cursor:
-                cursor.execute("""UPDATE orders_alert set is_read = True where id = %s""", [request.POST['message_id']])
     context = {
             'messages': Alert.objects.filter(staff=request.user.id)
             }
+    if request.method == 'POST':
+        if 'delete' in request.POST:
+            with connection.cursor() as cursor:
+                cursor.execute("""BEGIN TRANSACTION ISOLATION LEVEL READ UNCOMMITTED""")
+                cursor.execute("""DELETE FROM orders_alert where id = %s""", [request.POST['message_id']])
+                cursor.execute("""COMMIT""")
+
+        else:
+            with connection.cursor() as cursor:
+                cursor.execute("""BEGIN TRANSACTION ISOLATION LEVEL READ UNCOMMITTED""")
+                cursor.execute("""UPDATE orders_alert set is_read = True where id = %s""", [request.POST['message_id']])
+                cursor.execute("""COMMIT""")
+
+
     return render(request, 'message.html', context=context)
 
 def stockManagement(request):
@@ -292,12 +307,15 @@ def productManagement(request, id=''):
         return redirect('/')
     context = {
             'categories': Category.objects.all(),
-            'ingredients': Ingredient.objects.all(),
-            'products': Product.objects.all(),
+            'ingredients': Ingredient.objects.all().order_by('name'),
+            'products': [],
             'id': id,
     }
+    for category in context['categories']:
+        context['products'] += list(Product.objects.filter(category=category.id).order_by('price'))
     if request.method == 'GET':
         return render(request, 'productManagement.html', context=context)
+
     if request.POST['type'] == 'CREATE':
         form = ProductForm(request.POST)
         if form.is_valid():

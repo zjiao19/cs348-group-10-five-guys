@@ -19,12 +19,12 @@
         <label for="order">Sort by:</label>
         <form method = "POST">
           {% csrf_token %}
-          <select name="order" id="order" onchange="this.parentElement.submit();">
+          <select name="ordering" id="ordering" onchange="this.parentElement.submit();">
             <option value="id" {% if selected == 'id' %} selected {% endif %}>Id</option>
             <option value="date" {% if selected == 'date' %} selected {% endif %}>Date</option>
             <option value="price" {% if selected == 'price' %} selected {% endif %}>Price</option>
+            <option value="status" {% if selected == 'status'%} selected {% endif %}>Status</option>
           </select>
-        </form>
 
         {% for order in orders %}
           <div class="box py-4 text-center">
@@ -37,7 +37,7 @@
               <div class="col-8 overflow-auto">
                 <p>Item in order:</p>
                 {% for item in order|order_items %}
-                <p>{{item.item}}, {{item.quantity}}<p>
+                   <p>{{item.item}}, {{item.quantity}}<p>
                 {% endfor %}
               </div>
             </div>
@@ -45,6 +45,7 @@
           </div>
         {% endfor %}
 
+        </form>
 
     </div>
 </section><!-- End Whu Us Section -->

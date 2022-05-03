@@ -8,7 +8,7 @@
 {% block content %}
 
 <section class="inner-page">
-    <div class="container">
+    <div class="container d-none">
         <p>
             UI Design
         </p>
@@ -35,20 +35,23 @@
     </div>
 </section>
 
-<div class="container pb-2">
+<div class="container">
     <div class="row">
-        <p class="lead">Task Assignment Sheet:</p>
+        <div col-md-10 col-12 my-auto>
+            <div class="mb-5">
+                <h1>Please Log In to View All Pages</h1>
+            </div>
+            <div class="w-100 d-flex flex-column justify-content-start align-items-center my-5">
+                <div class="lead mb-3">Task Assignment Sheet:</div>
+                <iframe class="border w-100" style="height: 400px" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vShqIeKIPRp0UmAWmrXm-Pb1tHZ-SEBNDsoMO1P-5idkvdK16uDeKFxGfPTn5pO6VbsA-U0G9CK3cTp/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+            </div>
+            <div class="w-100 d-flex flex-column justify-content-start align-items-center">
+                <div class="lead mb-3">Stage 3 document:</div>
+                <iframe class="border" style="height: 3000px; width: 840px" src="https://docs.google.com/document/d/e/2PACX-1vRH7Nnxxtq89tTLz-diWnO4nlCW2IjBd1ZM63JbqC1LnlqoWvhvEh37uSXjNRuMM-SpPgU0lQvscCqz/pub?embedded=true"></iframe>
+            </div>
+        </div>
     </div>
-    <div class="row">
-            <iframe class="border" style="width:80%; height: 350px;" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vShqIeKIPRp0UmAWmrXm-Pb1tHZ-SEBNDsoMO1P-5idkvdK16uDeKFxGfPTn5pO6VbsA-U0G9CK3cTp/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
-    </div>
-    <div class="row">
-        <p class="lead">Stage 3 document:</p>
-    </div>
-    <div class="row">
-            <iframe class="border" style="width:80%; height: 350px;" src="https://docs.google.com/document/d/e/2PACX-1vRH7Nnxxtq89tTLz-diWnO4nlCW2IjBd1ZM63JbqC1LnlqoWvhvEh37uSXjNRuMM-SpPgU0lQvscCqz/pub?embedded=true"></iframe>
-    </div>
-  </div>
+</div>
 
 
 {% endblock %}

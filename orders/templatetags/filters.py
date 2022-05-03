@@ -19,7 +19,8 @@ def other_categories(product):
 @register.filter
 def unused_ingredients(product):
     used_ingredients = [_.ingredient for _ in product.recipe_set.all()]
-    return [_ for _ in Ingredient.objects.all() if _ not in used_ingredients]
+    ingredients = Ingredient.objects.all().order_by('name')
+    return [_ for _ in ingredients if _ not in used_ingredients]
 
 @register.filter
 def id_is(product, id):

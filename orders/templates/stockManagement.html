@@ -40,16 +40,16 @@
                 <button type="submit" class="btn btn-primary" name="action" value="update">Update</button>
             </div>
         </form>
-        <form method="POST" class="row">
+        <form method="POST" class="row mb-2">
             {% csrf_token %}
             <div class="col-3">
                 <input class="form-control" placeholder="Ingredient name" name="name">
             </div>
             <div class="col-3">
-                <select class="form-select" aria-label=".form-select-sm example" name="dropdown">
+                <select class="form-select" aria-label=".form-select-sm example" name="category">
                     <option selected value="empty">Category</option>
                     {% for item in categories %}
-                    <option name="category" value="{{ item.name }}">{{ item.name }}</option>
+                    <option value="{{ item.name }}">{{ item.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -63,7 +63,7 @@
                 <button type="submit" class="btn btn-primary" name="action" value="create">Create</button>
             </div>
         </form>
-        <form method="POST" class="row">
+        <form method="POST" class="row mb-2">
             {% csrf_token %}
             <div class="col-11">
                 <input class="form-control" placeholder="Ingredient name" name="name">

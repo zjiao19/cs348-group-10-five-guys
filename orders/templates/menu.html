@@ -9,91 +9,75 @@
 
 {% block content %}
 
-<br />
-<br />
-<br />
-<br />
 <style>
-    .details {
-        border: 1.5px solid grey;
-        color: #212121;
-        width: 100%;
-        height: auto;
-        box-shadow: 0px 0px 10px #212121
-    }
 
-    .cart {
+    button {
         background-color: #212121;
         color: white;
         font-size: 12px;
         font-weight: 900;
-        width: 100%;
-        box-shadow: 0px 5px 10px #212121
+        box-shadow: 0px 5px 10px #212121;
+        border: 0;
+        border-radius: 0;
+        height: 2rem;
     }
 
-    .card {
-        width: fit-content
+    button:hover {
+        background-color: rgb(255, 176, 59);
     }
 
-    .card-body {
-        width: fit-content
+    input {
+        border-radius: 0;
+        height: 2rem;
     }
 
-    .btn {
-        border-radius: 0
+    .thumbnail {
+        border: none;
+        height: 200px;
+        width: 200px;
+        object-fit: contain;
     }
 
-    .img-thumbnail {
-        border: none
-    }
-
-    .card {
+    .product {
         box-shadow: 0 20px 40px rgba(0, 0, 0, .2);
         border-radius: 5px;
-        padding-bottom: 10px;
-	height: 100%;
+        padding: 2rem;
+        margin: 1rem;
     }
 </style>
 
-<section id="menu" class="menu">
-    <div class="container">
+<div class="container">
 
-        <div class="section-title">
-            <h2>Our Delicious <span>Foods</span></h2>
-            <!-- <p>Ut possimus qui ut temporibus culpa velit eveniet modi omnis est adipisci expedita at voluptas atque vitae autem.</p> -->
-        </div>
+    <div class="section-title mt-5">
+        <h2>Our Delicious <span>Foods</span></h2>
+    </div>
 
 
-        <div class="row">
-            {% for product in products %}
-                <div class="col-lg-4 col-md-6 h-100">
-                    <div class='container-fluid h-100'>
-                        <div class="card mx-auto col-md-3 col-10 mt-5">
-                            <img class='mx-auto img-thumbnail' src=  {{product.image.url}} width="auto" height="auto" />
-                            <div class="card-body text-center mx-auto">
-                                <div class='cvp'>
-                                    <h5 class="card-title font-weight-bold">{{product.name}}</h5>
-                                    <p class="card-text">${{ product.price|floatformat:2 }}</p>
-                                    <p class="card-text text-muted">
-                                        {% for recipe in product.recipe_set.all %}
-                                          {{ recipe.ingredient.name | capfirst }}{% if recipe != product.recipe_set.all.last %},&nbsp;{% endif %}
-                                        {%endfor%}
-                                    </p>
-                                    <form class="row" method="POST">
-                                        {% csrf_token %}
-                                        <div class="col">
-                                          <input type="number" class="form-control" value="1" min="0" name= "quantity_{{ product.id }}">
-                                     </div>
-                                        <div class="col">
-                                           <button type="submit" class="btn cart px-auto">ADD TO CART</button>
-                                     </div>
-                                    </form>
-                             </div>
-                           </div>
-                      </div>
-                    </div>
+    <div class="row d-flex justify-content-around">
+        {% for product in products %}
+            <div class="product col-md-3 col-12 d-flex flex-column justify-content-between">
+                <div class="d-flex flex-column align-items-center mb-3">
+                    <img class='mx-auto thumbnail' src="{{product.image.url}}">
+                    <h5 class="font-weight-bold">{{product.name}}</h5>
+                    <p class="card-text">${{ product.price|floatformat:2 }}</p>
                 </div>
-            {% endfor %}
+                <p class="mx-auto d-flex flex-wrap justify-content-center text-muted">
+                    {% for recipe in product.recipe_set.all %}
+                        <span>
+                          {{ recipe.ingredient.name | capfirst }}
+                          {% if recipe != product.recipe_set.all.last %},&emsp;{% endif %}
+                        </span>
+                    {%endfor%}
+                </p>
+                <form class="row d-flex justify-content-around" method="POST">
+                    {% csrf_token %}
+                    <input type="number" class="col-3" value="1" min="0" name="quantity_{{ product.id }}">
+                    <button type="submit" class="col-6">ADD TO CART</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
 
 
